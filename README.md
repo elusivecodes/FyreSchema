@@ -33,7 +33,7 @@ use Fyre\Schema\SchemaRegistry;
 Get the *Cacher*.
 
 ```php
-$cache = $schema->getCache();
+$cache = SchemaRegistry::getCache();
 ```
 
 **Get Schema**
@@ -53,7 +53,7 @@ Set the *Cacher*.
 - `$cache` is a [*Cacher*](https://github.com/elusivecodes/FyreCache).
 
 ```php
-$schema->getCache($cache);
+SchemaRegistry::getCache($cache);
 ```
 
 **Set Handler**
@@ -116,7 +116,7 @@ $hasTable = $schema->hasTable($name);
 
 **Table**
 
-Get data for a table.
+Get the data for a table.
 
 - `$name` is a string representing the table name.
 

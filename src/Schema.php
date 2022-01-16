@@ -96,7 +96,7 @@ abstract class Schema
     }
 
     /**
-     * Get data for a table.
+     * Get the data for a table.
      * @param string $name The table name.
      * @return array|null The table data.
      */
