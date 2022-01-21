@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Fyre\Schema;
 
 use
-    Closure;
+    Closure,
+    Fyre\DB\TypeParser,
+    Fyre\DB\Types\Type;
 
 use function
     array_key_exists,
@@ -19,6 +21,8 @@ use function
  */
 abstract class TableSchema
 {
+
+    protected static array $types = [];
 
     protected Schema $schema;
 
@@ -166,6 +170,24 @@ abstract class TableSchema
     }
 
     /**
+     * Get a Type class for a column.
+     * @param string $name The column name.
+     * @return Type|null The Type.
+     */
+    public function getType(string $name): Type|null
+    {
+        $column = $this->column($name);
+
+        if (!$column) {
+            return null;
+        }
+
+        $type = static::getDatabaseType($column);
+
+        return TypeParser::getType($type);
+    }
+
+    /**
      * Get the data for a table index.
      * @param string $name The index name.
      * @return array|null The index data.
@@ -306,5 +328,17 @@ abstract class TableSchema
      * @return array The table indexes data.
      */
     abstract protected function readIndexes(): array;
+
+    /**
+     * Get the database type for a column.
+     * @param array $column The column data.
+     * @return string The database type.
+     */
+    protected static function getDatabaseType(array $column): string
+    {
+        $type = $column['type'] ?? null;
+
+        return static::$types[$type] ?? 'string';
+    }
 
 }

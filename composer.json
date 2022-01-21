@@ -21,7 +21,8 @@
     },
     "require": {
         "fyre/cache": "^1.0",
-        "fyre/db": "^1.1"
+        "fyre/db": "^1.1",
+        "fyre/typeparser": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9"

@@ -223,6 +223,16 @@ Get the table name.
 $tableName = $tableSchema->getTableName();
 ```
 
+**Get Type**
+
+Get the [*Type*](https://github.com/elusivecodes/FyreTypeParser) parser for a column.
+
+- `$name` is a string representing the column name.
+
+```php
+$parser = $tableSchema->getType($name);
+```
+
 **Index**
 
 Get the data for a table index.

@@ -15,6 +15,22 @@ use function
 class MySQLTableSchema extends TableSchema
 {
 
+    protected static array $types = [
+        'bigint' => 'integer',
+        'boolean' => 'boolean',
+        'date' => 'date',
+        'datetime' => 'datetime',
+        'decimal' => 'decimal',
+        'double' => 'decimal',
+        'float' => 'float',
+        'int' => 'integer',
+        'json' => 'json',
+        'smallint' => 'integer',
+        'time' => 'time',
+        'timestamp' => 'timestamp',
+        'tinyint' => 'integer'
+    ];
+
     /**
      * Read the table columns data.
      * @return array The table columns data.
@@ -180,6 +196,20 @@ class MySQLTableSchema extends TableSchema
         }
 
         return $indexes;
+    }
+
+    /**
+     * Get the database type for a column.
+     * @param array $column The column data.
+     * @return string The database type.
+     */
+    protected static function getDatabaseType(array $column): string
+    {
+        if ($column['type'] === $column['length'] && $length === 1) {
+            return 'boolean';
+        }
+
+        return parent::getDatabaseType($column);
     }
 
 }

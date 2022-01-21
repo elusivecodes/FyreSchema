@@ -15,7 +15,8 @@ final class TableSchemaTest extends TestCase
         ConnectionTrait,
         DefaultValueTest,
         ForeignKeyTest,
-        IndexTest;
+        IndexTest,
+        TypeTest;
 
     public function testGetSchema(): void
     {
