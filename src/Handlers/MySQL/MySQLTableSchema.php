@@ -27,7 +27,7 @@ class MySQLTableSchema extends TableSchema
         'json' => 'json',
         'smallint' => 'integer',
         'time' => 'time',
-        'timestamp' => 'timestamp',
+        'timestamp' => 'datetime',
         'tinyint' => 'integer'
     ];
 
