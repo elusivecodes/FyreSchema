@@ -32,7 +32,7 @@ final class CacheTest extends TestCase
                     'comment' => ''
                 ]
             ],
-            Cache::use('schema')->get('test.tables')
+            Cache::use('schema')->get('default.test.tables')
         );
     }
 
@@ -129,7 +129,7 @@ final class CacheTest extends TestCase
                     'comment' => ''
                 ]
             ],
-            Cache::use('schema')->get('test.test.columns')
+            Cache::use('schema')->get('default.test.test.columns')
         );
     }
 
@@ -149,7 +149,7 @@ final class CacheTest extends TestCase
                     'delete' => 'CASCADE'
                 ]
             ],
-            Cache::use('schema')->get('test.test_values.foreign_keys')
+            Cache::use('schema')->get('default.test.test_values.foreign_keys')
         );
     }
 
@@ -187,7 +187,7 @@ final class CacheTest extends TestCase
                     'foreignKey' => false
                 ]
             ],
-            Cache::use('schema')->get('test.test.indexes')
+            Cache::use('schema')->get('default.test.test.indexes')
         );
     }
 

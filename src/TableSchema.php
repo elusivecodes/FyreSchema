@@ -270,7 +270,7 @@ abstract class TableSchema
         }
 
         return $cache->remember(
-            $this->schema->getDatabaseName().'.'.$key,
+            $this->schema->getCachePrefix().'.'.$key,
             $callback
         );
     }

@@ -6,6 +6,7 @@ namespace Fyre\Schema;
 use
     Closure,
     Fyre\DB\Connection,
+    Fyre\DB\ConnectionManager,
     Fyre\Schema\Exceptions\SchemaException;
 
 use function
@@ -65,6 +66,19 @@ abstract class Schema
         }
 
         return $this->schemas[$name] ??= $this->tableSchema($name);
+    }
+
+    /**
+     * Get the cache prefix.
+     * @return string The cache prefix.
+     */
+    public function getCachePrefix(): string
+    {
+        $key = ConnectionManager::getKey($this->connection);
+
+        return $key ?
+            $key.'.'.$this->database :
+            $this->database;
     }
 
     /**
@@ -136,7 +150,7 @@ abstract class Schema
         }
 
         return $cache->remember(
-            $this->database.'.tables',
+            $this->getCachePrefix().'.tables',
             Closure::fromCallable([$this, 'readTables'])
         );
     }
