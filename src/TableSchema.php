@@ -295,7 +295,7 @@ abstract class TableSchema
     {
         return $this->load(
             $this->tableName.'.foreign_keys',
-            fn() => $this->readForeignKeys()
+            fn(): array => $this->readForeignKeys()
         );
     }
 
@@ -307,7 +307,7 @@ abstract class TableSchema
     {
         return $this->load(
             $this->tableName.'.indexes',
-            fn() => $this->readIndexes()
+            fn(): array => $this->readIndexes()
         );
     }
 
