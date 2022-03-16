@@ -99,7 +99,7 @@ abstract class TableSchema
      * @param string $name The column name.
      * @return mixed The default value.
      */
-    public function defaultValue(string $name)
+    public function defaultValue(string $name): mixed
     {
         if (!$this->hasColumn($name)) {
             return null;
