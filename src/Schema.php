@@ -40,6 +40,7 @@ abstract class Schema
 
     /**
      * Clear data from the cache.
+     * @return Schema The Schema.
      */
     public function clear(): static
     {
@@ -48,7 +49,7 @@ abstract class Schema
         $cache = SchemaRegistry::getCache();
 
         if ($cache) {
-            $cache->forget($this->database.'.tables');
+            $cache->delete($this->database.'.tables');
         }
 
         return $this;

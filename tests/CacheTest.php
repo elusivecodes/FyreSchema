@@ -142,9 +142,13 @@ final class CacheTest extends TestCase
         $this->assertSame(
             [
                 'test_values_test_id' => [
-                    'column' => 'test_id',
-                    'referenced_table' => 'test',
-                    'referenced_column' => 'id',
+                    'columns' => [
+                        'test_id'
+                    ],
+                    'referencedTable' => 'test',
+                    'referencedColumns' => [
+                        'id'
+                    ],
                     'update' => 'CASCADE',
                     'delete' => 'CASCADE'
                 ]

@@ -47,6 +47,7 @@ abstract class TableSchema
 
     /**
      * Clear data from the cache.
+     * @return TableSchema The TableSchema.
      */
     public function clear(): static
     {
@@ -55,7 +56,7 @@ abstract class TableSchema
         if ($cache) {
             $database = $this->schema->getDatabaseName();
             foreach (['columns', 'indexes', 'foreign_keys'] AS $key) {
-                $cache->forget($database.'.'.$key);
+                $cache->delete($database.'.'.$key);
             }
         }
 

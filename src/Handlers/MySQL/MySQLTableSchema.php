@@ -116,9 +116,6 @@ class MySQLTableSchema extends TableSchema
                 'KeyColumnUsage.TABLE_NAME' => $this->tableName,
                 'KeyColumnUsage.REFERENCED_TABLE_SCHEMA IS NOT NULL'
             ])
-            ->groupBy([
-                'KeyColumnUsage.CONSTRAINT_NAME'
-            ])
             ->execute()
             ->all();
 
@@ -127,13 +124,16 @@ class MySQLTableSchema extends TableSchema
         foreach ($results AS $result) {
             $constraintName = $result['CONSTRAINT_NAME'];
 
-            $foreignKeys[$constraintName] = [
-                'column' => $result['COLUMN_NAME'],
-                'referenced_table' => $result['REFERENCED_TABLE_NAME'],
-                'referenced_column' => $result['REFERENCED_COLUMN_NAME'],
+            $foreignKeys[$constraintName] ??= [
+                'columns' => [],
+                'referencedTable' => $result['REFERENCED_TABLE_NAME'],
+                'referencedColumns' => [],
                 'update' => $result['UPDATE_RULE'],
                 'delete' => $result['DELETE_RULE']
             ];
+
+            $foreignKeys[$constraintName]['columns'][] = $result['COLUMN_NAME'];
+            $foreignKeys[$constraintName]['referencedColumns'][] = $result['REFERENCED_COLUMN_NAME'];
         }
 
         return $foreignKeys;
