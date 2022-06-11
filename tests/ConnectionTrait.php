@@ -76,6 +76,7 @@ trait ConnectionTrait
                 `value` INT(10) UNSIGNED NOT NULL DEFAULT '5',
                 `price` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT '2.50',
                 `text` VARCHAR(255) NOT NULL DEFAULT 'default' COLLATE 'utf8mb4_unicode_ci',
+                `test` ENUM('Y','N') NOT NULL DEFAULT 'Y',
                 `created` DATETIME NOT NULL DEFAULT current_timestamp(),
                 `modified` DATETIME NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
                 PRIMARY KEY (`id`),

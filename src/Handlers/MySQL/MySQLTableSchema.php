@@ -7,7 +7,11 @@ use
     Fyre\Schema\TableSchema;
 
 use function
-    str_ends_with;
+    array_map,
+    explode,
+    preg_match,
+    str_ends_with,
+    substr;
 
 /**
  * MySQLTableSchema
@@ -65,10 +69,22 @@ class MySQLTableSchema extends TableSchema
         foreach ($results AS $result) {
             $columnName = $result['COLUMN_NAME'];
 
+            $values = null;
+            $length = null;
+            if (preg_match('/^(?:enum|set)\((.*)\)$/', $result['COLUMN_TYPE'], $match)) {
+                $values = array_map(
+                    fn(string $value): string => substr($value, 1, -1),
+                    explode(',', $match[1])
+                );
+            } else {
+                $length = $result['CHARACTER_MAXIMUM_LENGTH'] ?? $result['NUMERIC_PRECISION'];
+            }
+
             $columns[$columnName] = [
                 'type' => $result['DATA_TYPE'],
-                'length' => $result['CHARACTER_MAXIMUM_LENGTH'] ?? $result['NUMERIC_PRECISION'],
+                'length' => $length,
                 'precision' => $result['NUMERIC_SCALE'],
+                'values' => $values,
                 'nullable' => $result['IS_NULLABLE'] === 'YES',
                 'unsigned' => str_ends_with($result['COLUMN_TYPE'], 'unsigned'),
                 'default' => $result['COLUMN_DEFAULT'],
