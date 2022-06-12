@@ -40,7 +40,7 @@ $cache = SchemaRegistry::getCache();
 
 Get the *Schema* for a *Connection*.
 
-- `$schema` is a [*Connection*](https://github.com/elusivecodes/FyreDB).
+- `$connection` is a [*Connection*](https://github.com/elusivecodes/FyreDB).
 
 ```php
 $schema = SchemaRegistry::getSchema($connection);
@@ -80,7 +80,7 @@ $schema->clear();
 
 **Describe**
 
-Get the *TableSchema* for a table.
+Get the [*TableSchema*](#table-schemas) for a table.
 
 - `$name` is a string representing the table name.
 
