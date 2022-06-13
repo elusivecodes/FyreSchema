@@ -43,9 +43,9 @@ abstract class SchemaRegistry
     /**
      * Get the Schema for a Connection.
      * @param Connection $connection The Connection.
-     * @return Schema The Schema.
+     * @return SchemaInterface The Schema.
      */
-    public static function getSchema(Connection $connection): Schema
+    public static function getSchema(Connection $connection): SchemaInterface
     {
         static::$schemas ??= new WeakMap;
 
@@ -76,9 +76,9 @@ abstract class SchemaRegistry
     /**
      * Load a Schema for a Connection.
      * @param Connection $connection The Connection.
-     * @return Schema The Schema.
+     * @return SchemaInterface The Schema.
      */
-    protected static function loadSchema(Connection $connection): Schema
+    protected static function loadSchema(Connection $connection): SchemaInterface
     {
         $connectionClass = get_class($connection);
 

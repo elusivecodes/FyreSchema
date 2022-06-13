@@ -4,13 +4,17 @@ declare(strict_types=1);
 namespace Fyre\Schema\Handlers\MySQL;
 
 use
-    Fyre\Schema\Schema;
+    Fyre\Schema\SchemaInterface,
+    Fyre\Schema\Traits\SchemaTrait;
 
 /**
  * MySQLSchema
  */
-class MySQLSchema extends Schema
+class MySQLSchema implements SchemaInterface
 {
+
+    use
+        SchemaTrait;
 
     /**
      * Read the schema tables data.
@@ -64,7 +68,7 @@ class MySQLSchema extends Schema
     /**
      * Create a TableSchema.
      * @param string $name The table name.
-     * @return TableSchema The TableSchema.
+     * @return TableSchemaInterface The TableSchema.
      */
     protected function tableSchema(string $name): MySQLTableSchema
     {

@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace Fyre\Schema\Handlers\MySQL;
 
 use
-    Fyre\Schema\TableSchema;
+    Fyre\Schema\TableSchemaInterface,
+    Fyre\Schema\Traits\TableSchemaTrait;
 
 use function
     array_map,
@@ -16,24 +17,11 @@ use function
 /**
  * MySQLTableSchema
  */
-class MySQLTableSchema extends TableSchema
+class MySQLTableSchema implements TableSchemaInterface
 {
 
-    protected static array $types = [
-        'bigint' => 'integer',
-        'boolean' => 'boolean',
-        'date' => 'date',
-        'datetime' => 'datetime',
-        'decimal' => 'decimal',
-        'double' => 'decimal',
-        'float' => 'float',
-        'int' => 'integer',
-        'json' => 'json',
-        'smallint' => 'integer',
-        'time' => 'time',
-        'timestamp' => 'datetime',
-        'tinyint' => 'integer'
-    ];
+    use
+        TableSchemaTrait;
 
     /**
      * Read the table columns data.
@@ -225,7 +213,9 @@ class MySQLTableSchema extends TableSchema
             return 'boolean';
         }
 
-        return parent::getDatabaseType($column);
+        $type = $column['type'] ?? null;
+
+        return static::$types[$type] ?? 'string';
     }
 
 }

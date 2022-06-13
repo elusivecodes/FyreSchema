@@ -10,7 +10,7 @@ use
     Fyre\DB\ConnectionManager,
     Fyre\DB\Handlers\MySQL\MySQLConnection,
     Fyre\FileSystem\Folder,
-    Fyre\Schema\Schema,
+    Fyre\Schema\SchemaInterface,
     Fyre\Schema\SchemaRegistry;
 
 use function
@@ -21,7 +21,7 @@ trait ConnectionTrait
 
     protected Connection $db;
 
-    protected Schema $schema;
+    protected SchemaInterface $schema;
 
     protected function setUp(): void
     {

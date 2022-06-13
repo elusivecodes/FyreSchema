@@ -1,12 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Fyre\Schema;
+namespace Fyre\Schema\Traits;
 
 use
     Closure,
     Fyre\DB\TypeParser,
-    Fyre\DB\Types\Type;
+    Fyre\DB\Types\Type,
+    Fyre\Schema\SchemaInterface,
+    Fyre\Schema\SchemaRegistry;
 
 use function
     array_key_exists,
@@ -17,14 +19,28 @@ use function
     strtolower;
 
 /**
- * TableSchema
+ * TableSchemaTrait
  */
-abstract class TableSchema
+trait TableSchemaTrait
 {
 
-    protected static array $types = [];
+    protected static array $types = [
+        'bigint' => 'integer',
+        'boolean' => 'boolean',
+        'date' => 'date',
+        'datetime' => 'datetime',
+        'decimal' => 'decimal',
+        'double' => 'decimal',
+        'float' => 'float',
+        'int' => 'integer',
+        'json' => 'json',
+        'smallint' => 'integer',
+        'time' => 'time',
+        'timestamp' => 'datetime',
+        'tinyint' => 'integer'
+    ];
 
-    protected Schema $schema;
+    protected SchemaInterface $schema;
 
     protected string $tableName;
 
@@ -39,7 +55,7 @@ abstract class TableSchema
      * @param Schema $schema The Schema.
      * @param string $tableName The table name.
      */
-    public function __construct(Schema $schema, string $tableName)
+    public function __construct(SchemaInterface $schema, string $tableName)
     {
         $this->schema = $schema;
         $this->tableName = $tableName;
@@ -47,7 +63,7 @@ abstract class TableSchema
 
     /**
      * Clear data from the cache.
-     * @return TableSchema The TableSchema.
+     * @return TableSchemaInterface The TableSchema.
      */
     public function clear(): static
     {
@@ -154,9 +170,9 @@ abstract class TableSchema
 
     /**
      * Get the Schema.
-     * @return Schema The Schema.
+     * @return SchemaInterface The Schema.
      */
-    public function getSchema(): Schema
+    public function getSchema(): SchemaInterface
     {
         return $this->schema;
     }
@@ -311,24 +327,6 @@ abstract class TableSchema
             fn(): array => $this->readIndexes()
         );
     }
-
-    /**
-     * Read the table columns data.
-     * @return array The table columns data.
-     */
-    abstract protected function readColumns(): array;
-
-    /**
-     * Read the table foreign keys data.
-     * @return array The table foreign keys data.
-     */
-    abstract protected function readForeignKeys(): array;
-
-    /**
-     * Read the table indexes data.
-     * @return array The table indexes data.
-     */
-    abstract protected function readIndexes(): array;
 
     /**
      * Get the database type for a column.

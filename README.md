@@ -30,7 +30,7 @@ use Fyre\Schema\SchemaRegistry;
 
 **Get Cache**
 
-Get the *Cacher*.
+Get the [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers).
 
 ```php
 $cache = SchemaRegistry::getCache();
@@ -38,9 +38,9 @@ $cache = SchemaRegistry::getCache();
 
 **Get Schema**
 
-Get the *Schema* for a *Connection*.
+Get the [*Schema*](#schemas) for a [*Connection*](https://github.com/elusivecodes/FyreDB#connections).
 
-- `$connection` is a [*Connection*](https://github.com/elusivecodes/FyreDB).
+- `$connection` is a [*Connection*](https://github.com/elusivecodes/FyreDB#connections).
 
 ```php
 $schema = SchemaRegistry::getSchema($connection);
@@ -48,9 +48,9 @@ $schema = SchemaRegistry::getSchema($connection);
 
 **Set Cache**
 
-Set the *Cacher*.
+Set the [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers).
 
-- `$cache` is a [*Cacher*](https://github.com/elusivecodes/FyreCache).
+- `$cache` is a [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers).
 
 ```php
 SchemaRegistry::getCache($cache);
@@ -58,10 +58,10 @@ SchemaRegistry::getCache($cache);
 
 **Set Handler**
 
-Set a *Schema* handler for a *Connection* class.
+Set a [*Schema*](#schemas) handler for a [*Connection*](https://github.com/elusivecodes/FyreDB#connections) class.
 
-- `$connectionClass` is a string representing the *Connection* class name.
-- `$schemaClass` is a string representing the *Schema* class name.
+- `$connectionClass` is a string representing the [*Connection*](https://github.com/elusivecodes/FyreDB#connections) class name.
+- `$schemaClass` is a string representing the [*Schema*](#schemas) class name.
 
 ```php
 SchemaRegistry::setHandler($connectionClass, $schemaClass);
@@ -90,7 +90,7 @@ $tableSchema = $schema->describe($name);
 
 **Get Connection**
 
-Get the *Connection*.
+Get the [*Connection*](https://github.com/elusivecodes/FyreDB#connections).
 
 ```php
 $connection = $schema->getConnection();
