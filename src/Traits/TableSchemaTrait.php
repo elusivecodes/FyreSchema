@@ -70,9 +70,9 @@ trait TableSchemaTrait
         $cache = SchemaRegistry::getCache();
 
         if ($cache) {
-            $database = $this->schema->getDatabaseName();
+            $prefix = $this->schema->getCachePrefix();
             foreach (['columns', 'indexes', 'foreign_keys'] AS $key) {
-                $cache->delete($database.'.'.$key);
+                $cache->delete($prefix.'.'.$key);
             }
         }
 

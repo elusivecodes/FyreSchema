@@ -51,7 +51,7 @@ trait SchemaTrait
         $cache = SchemaRegistry::getCache();
 
         if ($cache) {
-            $cache->delete($this->database.'.tables');
+            $cache->delete($this->getCachePrefix().'.tables');
         }
 
         return $this;
