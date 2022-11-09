@@ -336,6 +336,11 @@ trait TableSchemaTrait
     protected static function getDatabaseType(array $column): string
     {
         $type = $column['type'] ?? null;
+        $length = $column['length'] ?? null;
+
+        if ($type === 'tinyint' && $length == 1) {
+            return 'boolean';
+        }
 
         return static::$types[$type] ?? 'string';
     }

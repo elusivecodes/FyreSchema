@@ -47,6 +47,7 @@ trait ColumnTest
                 'price',
                 'text',
                 'test',
+                'bool',
                 'created',
                 'modified'
             ],
@@ -138,7 +139,19 @@ trait ColumnTest
                     'collation' => 'utf8mb4_unicode_ci',
                     'extra' => '',
                     'comment' => ''
-
+                ],
+                'bool' => [
+                    'type' => 'tinyint',
+                    'length' => 1,
+                    'precision' => 0,
+                    'values' => null,
+                    'nullable' => false,
+                    'unsigned' => true,
+                    'default' => '0',
+                    'charset' => null,
+                    'collation' => null,
+                    'extra' => '',
+                    'comment' => ''
                 ],
                 'created' => [
                     'type' => 'datetime',

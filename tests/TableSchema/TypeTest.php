@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\TableSchema;
 
 use
+    Fyre\DB\Types\BooleanType,
     Fyre\DB\Types\DateTimeType,
     Fyre\DB\Types\DecimalType,
     Fyre\DB\Types\StringType;
@@ -35,6 +36,15 @@ trait TypeTest
             DecimalType::class,
             $this->schema->describe('test')
                 ->getType('price')
+        );
+    }
+
+    public function testGetTypeBoolean(): void
+    {
+        $this->assertInstanceOf(
+            BooleanType::class,
+            $this->schema->describe('test')
+                ->getType('bool')
         );
     }
 

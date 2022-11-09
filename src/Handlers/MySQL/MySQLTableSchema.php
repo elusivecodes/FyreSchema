@@ -9,6 +9,7 @@ use
 
 use function
     array_map,
+    count,
     explode,
     preg_match,
     str_ends_with,
@@ -59,19 +60,27 @@ class MySQLTableSchema implements TableSchemaInterface
 
             $values = null;
             $length = null;
-            if (preg_match('/^(?:enum|set)\((.*)\)$/', $result['COLUMN_TYPE'], $match)) {
+            $precision = null;
+            if (preg_match('/^(?:decimal|numeric)\(([0-9]+),([0-9]+)\)/', $result['COLUMN_TYPE'], $match)) {
+                $length = (int) $match[1];
+                $precision = (int) $match[2];
+            } else if (preg_match('/^(?:tinyint|smallint|mediumint|int|bigint)\(([0-9]+)\)/', $result['COLUMN_TYPE'], $match)) {
+                $length = (int) $match[1];
+                $precision = 0;
+            } else if (preg_match('/^(?:enum|set)\((.*)\)$/', $result['COLUMN_TYPE'], $match)) {
                 $values = array_map(
                     fn(string $value): string => substr($value, 1, -1),
                     explode(',', $match[1])
                 );
             } else {
                 $length = $result['CHARACTER_MAXIMUM_LENGTH'] ?? $result['NUMERIC_PRECISION'];
+                $precisision = $result['NUMERIC_SCALE'];
             }
 
             $columns[$columnName] = [
                 'type' => $result['DATA_TYPE'],
                 'length' => $length,
-                'precision' => $result['NUMERIC_SCALE'],
+                'precision' => $precision,
                 'values' => $values,
                 'nullable' => $result['IS_NULLABLE'] === 'YES',
                 'unsigned' => str_ends_with($result['COLUMN_TYPE'], 'unsigned'),
@@ -209,11 +218,12 @@ class MySQLTableSchema implements TableSchemaInterface
      */
     protected static function getDatabaseType(array $column): string
     {
-        if ($column['type'] === $column['length'] && $length === 1) {
+        $type = $column['type'] ?? null;
+        $length = $column['length'] ?? null;
+
+        if ($type === 'tinyint' && $length === 1) {
             return 'boolean';
         }
-
-        $type = $column['type'] ?? null;
 
         return static::$types[$type] ?? 'string';
     }
