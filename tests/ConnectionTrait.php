@@ -3,25 +3,23 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use
-    Fyre\Cache\Cache,
-    Fyre\Cache\Handlers\FileCacher,
-    Fyre\DB\Connection,
-    Fyre\DB\ConnectionManager,
-    Fyre\DB\Handlers\MySQL\MySQLConnection,
-    Fyre\FileSystem\Folder,
-    Fyre\Schema\SchemaInterface,
-    Fyre\Schema\SchemaRegistry;
+use Fyre\Cache\Cache;
+use Fyre\Cache\Handlers\FileCacher;
+use Fyre\DB\Connection;
+use Fyre\DB\ConnectionManager;
+use Fyre\DB\Handlers\MySQL\MySQLConnection;
+use Fyre\FileSystem\Folder;
+use Fyre\Schema\Schema;
+use Fyre\Schema\SchemaRegistry;
 
-use function
-    getenv;
+use function getenv;
 
 trait ConnectionTrait
 {
 
     protected Connection $db;
 
-    protected SchemaInterface $schema;
+    protected Schema $schema;
 
     protected function setUp(): void
     {
@@ -40,24 +38,31 @@ trait ConnectionTrait
 
     public static function setUpBeforeClass(): void
     {
-        ConnectionManager::setConfig('default', [
-            'className' => MySQLConnection::class,
-            'host' => getenv('DB_HOST'),
-            'username' => getenv('DB_USERNAME'),
-            'password' => getenv('DB_PASSWORD'),
-            'database' => getenv('DB_NAME'),
-            'port' => getenv('DB_PORT'),
-            'collation' => 'utf8mb4_unicode_ci',
-            'charset' => 'utf8mb4',
-            'compress' => true,
-            'persist' => true
+        ConnectionManager::clear();
+        Cache::clear();
+
+        ConnectionManager::setConfig([
+            'default' => [
+                'className' => MySQLConnection::class,
+                'host' => getenv('DB_HOST'),
+                'username' => getenv('DB_USERNAME'),
+                'password' => getenv('DB_PASSWORD'),
+                'database' => getenv('DB_NAME'),
+                'port' => getenv('DB_PORT'),
+                'collation' => 'utf8mb4_unicode_ci',
+                'charset' => 'utf8mb4',
+                'compress' => true,
+                'persist' => true
+            ]
         ]);
 
-        Cache::setConfig('schema', [
-            'className' =>  FileCacher::class,
-            'path' => 'tmp',
-            'prefix' => 'schema.',
-            'expire' => 3600
+        Cache::setConfig([
+            'schema' => [
+                'className' =>  FileCacher::class,
+                'path' => 'tmp',
+                'prefix' => 'schema.',
+                'expire' => 3600
+            ]
         ]);
 
         $cache = Cache::use('schema');

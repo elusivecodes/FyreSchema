@@ -1,6 +1,6 @@
 # FyreSchema
 
-**FyreSchema** is a free, database schema library for *PHP*.
+**FyreSchema** is a free, open-source database schema library for *PHP*.
 
 
 ## Table Of Contents

@@ -3,20 +3,18 @@ declare(strict_types=1);
 
 namespace Tests\TableSchema;
 
-use
-    Tests\ConnectionTrait,
-    PHPUnit\Framework\TestCase;
+use Tests\ConnectionTrait;
+use PHPUnit\Framework\TestCase;
 
 final class TableSchemaTest extends TestCase
 {
 
-    use
-        ColumnTest,
-        ConnectionTrait,
-        DefaultValueTest,
-        ForeignKeyTest,
-        IndexTest,
-        TypeTest;
+    use ColumnTestTrait;
+    use ConnectionTrait;
+    use DefaultValueTestTrait;
+    use ForeignKeyTestTrait;
+    use IndexTestTrait;
+    use TypeTestTrait;
 
     public function testGetSchema(): void
     {

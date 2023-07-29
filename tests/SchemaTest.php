@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use
-    PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 final class SchemaTest extends TestCase
 {
 
-    use
-        ConnectionTrait;
+    use ConnectionTrait;
 
     public function testGetConnection(): void
     {

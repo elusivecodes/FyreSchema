@@ -3,19 +3,17 @@ declare(strict_types=1);
 
 namespace Fyre\Schema;
 
-use
-    Fyre\Cache\Cacher,
-    Fyre\DB\Connection,
-    Fyre\DB\Handlers\MySQL\MySQLConnection,
-    Fyre\Schema\Exceptions\SchemaException,
-    Fyre\Schema\Handlers\MySQL\MySQLSchema,
-    WeakMap;
+use Fyre\Cache\Cacher;
+use Fyre\DB\Connection;
+use Fyre\DB\Handlers\MySQL\MySQLConnection;
+use Fyre\Schema\Exceptions\SchemaException;
+use Fyre\Schema\Handlers\MySQL\MySQLSchema;
+use WeakMap;
 
-use function
-    array_key_exists,
-    array_merge,
-    get_class,
-    ltrim;
+use function array_key_exists;
+use function array_merge;
+use function get_class;
+use function ltrim;
 
 /**
  * SchemaRegistry
@@ -43,9 +41,9 @@ abstract class SchemaRegistry
     /**
      * Get the Schema for a Connection.
      * @param Connection $connection The Connection.
-     * @return SchemaInterface The Schema.
+     * @return Schema The Schema.
      */
-    public static function getSchema(Connection $connection): SchemaInterface
+    public static function getSchema(Connection $connection): Schema
     {
         static::$schemas ??= new WeakMap;
 
@@ -76,9 +74,9 @@ abstract class SchemaRegistry
     /**
      * Load a Schema for a Connection.
      * @param Connection $connection The Connection.
-     * @return SchemaInterface The Schema.
+     * @return Schema The Schema.
      */
-    protected static function loadSchema(Connection $connection): SchemaInterface
+    protected static function loadSchema(Connection $connection): Schema
     {
         $connectionClass = get_class($connection);
 

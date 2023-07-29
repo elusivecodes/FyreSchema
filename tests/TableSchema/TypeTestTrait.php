@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace Tests\TableSchema;
 
-use
-    Fyre\DB\Types\BooleanType,
-    Fyre\DB\Types\DateTimeType,
-    Fyre\DB\Types\DecimalType,
-    Fyre\DB\Types\StringType;
+use Fyre\DB\Types\BooleanType;
+use Fyre\DB\Types\DateTimeType;
+use Fyre\DB\Types\DecimalType;
+use Fyre\DB\Types\StringType;
 
-trait TypeTest
+trait TypeTestTrait
 {
 
     public function testGetType(): void

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\TableSchema;
 
-trait ColumnTest
+trait ColumnTestTrait
 {
 
     public function testColumn(): void

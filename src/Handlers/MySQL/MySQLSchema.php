@@ -3,18 +3,13 @@ declare(strict_types=1);
 
 namespace Fyre\Schema\Handlers\MySQL;
 
-use
-    Fyre\Schema\SchemaInterface,
-    Fyre\Schema\Traits\SchemaTrait;
+use Fyre\Schema\Schema;
 
 /**
  * MySQLSchema
  */
-class MySQLSchema implements SchemaInterface
+class MySQLSchema extends Schema
 {
-
-    use
-        SchemaTrait;
 
     /**
      * Read the schema tables data.
@@ -45,6 +40,9 @@ class MySQLSchema implements SchemaInterface
             ])
             ->where([
                 'Tables.TABLE_SCHEMA' => $this->database
+            ])
+            ->orderBy([
+                'Tables.TABLE_NAME' => 'ASC'
             ])
             ->execute()
             ->all();

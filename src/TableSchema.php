@@ -1,27 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace Fyre\Schema\Traits;
+namespace Fyre\Schema;
 
-use
-    Closure,
-    Fyre\DB\TypeParser,
-    Fyre\DB\Types\Type,
-    Fyre\Schema\SchemaInterface,
-    Fyre\Schema\SchemaRegistry;
+use Closure;
+use Fyre\DB\TypeParser;
+use Fyre\DB\Types\Type;
 
-use function
-    array_key_exists,
-    array_keys,
-    ctype_digit,
-    is_numeric,
-    preg_match,
-    strtolower;
+use function array_key_exists;
+use function array_keys;
+use function ctype_digit;
+use function is_numeric;
+use function preg_match;
+use function strtolower;
 
 /**
- * TableSchemaTrait
+ * TableSchema
  */
-trait TableSchemaTrait
+abstract class TableSchema
 {
 
     protected static array $types = [
@@ -40,7 +36,7 @@ trait TableSchemaTrait
         'tinyint' => 'integer'
     ];
 
-    protected SchemaInterface $schema;
+    protected Schema $schema;
 
     protected string $tableName;
 
@@ -55,7 +51,7 @@ trait TableSchemaTrait
      * @param Schema $schema The Schema.
      * @param string $tableName The table name.
      */
-    public function __construct(SchemaInterface $schema, string $tableName)
+    public function __construct(Schema $schema, string $tableName)
     {
         $this->schema = $schema;
         $this->tableName = $tableName;
@@ -63,7 +59,7 @@ trait TableSchemaTrait
 
     /**
      * Clear data from the cache.
-     * @return TableSchemaInterface The TableSchema.
+     * @return TableSchema The TableSchema.
      */
     public function clear(): static
     {
@@ -170,9 +166,9 @@ trait TableSchemaTrait
 
     /**
      * Get the Schema.
-     * @return SchemaInterface The Schema.
+     * @return Schema The Schema.
      */
-    public function getSchema(): SchemaInterface
+    public function getSchema(): Schema
     {
         return $this->schema;
     }
@@ -201,7 +197,7 @@ trait TableSchemaTrait
 
         $type = static::getDatabaseType($column);
 
-        return TypeParser::getType($type);
+        return TypeParser::use($type);
     }
 
     /**
@@ -327,6 +323,24 @@ trait TableSchemaTrait
             fn(): array => $this->readIndexes()
         );
     }
+
+    /**
+     * Read the table columns data.
+     * @return array The table columns data.
+     */
+    abstract protected function readColumns(): array;
+
+    /**
+     * Read the table foreign keys data.
+     * @return array The table foreign keys data.
+     */
+    abstract protected function readForeignKeys(): array;
+
+    /**
+     * Read the table indexes data.
+     * @return array The table indexes data.
+     */
+    abstract protected function readIndexes(): array;
 
     /**
      * Get the database type for a column.

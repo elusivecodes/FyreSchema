@@ -1,23 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Fyre\Schema\Traits;
+namespace Fyre\Schema;
 
-use
-    Closure,
-    Fyre\DB\Connection,
-    Fyre\DB\ConnectionManager,
-    Fyre\Schema\Exceptions\SchemaException,
-    Fyre\Schema\SchemaRegistry,
-    Fyre\Schema\TableSchemaInterface;
+use Closure;
+use Fyre\DB\Connection;
+use Fyre\DB\ConnectionManager;
+use Fyre\Schema\Exceptions\SchemaException;
 
-use function
-    array_keys;
+use function array_keys;
 
 /**
- * SchemaTrait
+ * Schema
  */
-trait SchemaTrait
+abstract class Schema
 {
 
     protected Connection $connection;
@@ -60,9 +56,9 @@ trait SchemaTrait
     /**
      * Get the TableSchema for a table.
      * @param string $name The table name.
-     * @return TableSchemaInterface The TableSchema.
+     * @return TableSchema The TableSchema.
      */
-    public function describe(string $name): TableSchemaInterface
+    public function describe(string $name): TableSchema
     {
         if (!$this->hasTable($name)) {
             throw SchemaException::forInvalidTable($name);
@@ -157,5 +153,18 @@ trait SchemaTrait
             Closure::fromCallable([$this, 'readTables'])
         );
     }
+
+    /**
+     * Read the schema tables data.
+     * @return array The schema tables data.
+     */
+    abstract protected function readTables(): array;
+
+    /**
+     * Create a TableSchema.
+     * @param string $name The table name.
+     * @return TableSchema The TableSchema.
+     */
+    abstract protected function tableSchema(string $name): TableSchema;
 
 }

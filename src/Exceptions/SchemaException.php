@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Fyre\Schema\Exceptions;
 
-use
-    RunTimeException;
+use RunTimeException;
 
 /**
  * SchemaException

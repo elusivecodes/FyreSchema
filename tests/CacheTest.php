@@ -3,15 +3,13 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use
-    Fyre\Cache\Cache,
-    PHPUnit\Framework\TestCase;
+use Fyre\Cache\Cache;
+use PHPUnit\Framework\TestCase;
 
 final class CacheTest extends TestCase
 {
 
-    use
-        ConnectionTrait;
+    use ConnectionTrait;
 
     public function testCacheTables(): void
     {

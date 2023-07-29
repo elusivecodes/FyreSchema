@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\TableSchema;
 
-trait ForeignKeyTest
+trait ForeignKeyTestTrait
 {
 
     public function testForeignKey(): void

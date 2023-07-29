@@ -3,26 +3,21 @@ declare(strict_types=1);
 
 namespace Fyre\Schema\Handlers\MySQL;
 
-use
-    Fyre\Schema\TableSchemaInterface,
-    Fyre\Schema\Traits\TableSchemaTrait;
+use Fyre\DB\ValueBinder;
+use Fyre\Schema\TableSchema;
 
-use function
-    array_map,
-    count,
-    explode,
-    preg_match,
-    str_ends_with,
-    substr;
+use function array_map;
+use function count;
+use function explode;
+use function preg_match;
+use function str_ends_with;
+use function substr;
 
 /**
  * MySQLTableSchema
  */
-class MySQLTableSchema implements TableSchemaInterface
+class MySQLTableSchema extends TableSchema
 {
-
-    use
-        TableSchemaTrait;
 
     /**
      * Read the table columns data.
@@ -30,7 +25,8 @@ class MySQLTableSchema implements TableSchemaInterface
      */
     protected function readColumns(): array
     {
-        $results = $this->schema->getConnection()->builder()
+        $results = $this->schema->getConnection()
+            ->builder()
             ->table('INFORMATION_SCHEMA.COLUMNS')
             ->select([
                 'COLUMN_NAME',
@@ -49,6 +45,9 @@ class MySQLTableSchema implements TableSchemaInterface
             ->where([
                 'TABLE_SCHEMA' => $this->schema->getDatabaseName(),
                 'TABLE_NAME' => $this->tableName
+            ])
+            ->orderBy([
+                'ORDINAL_POSITION' => 'ASC'
             ])
             ->execute()
             ->all();
@@ -101,7 +100,8 @@ class MySQLTableSchema implements TableSchemaInterface
      */
     protected function readForeignKeys(): array
     {
-        $results = $this->schema->getConnection()->builder()
+        $results = $this->schema->getConnection()
+            ->builder()
             ->table([
                 'KeyColumnUsage' => 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE'
             ])
@@ -128,6 +128,9 @@ class MySQLTableSchema implements TableSchemaInterface
                 'KeyColumnUsage.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
                 'KeyColumnUsage.TABLE_NAME' => $this->tableName,
                 'KeyColumnUsage.REFERENCED_TABLE_SCHEMA IS NOT NULL'
+            ])
+            ->orderBy([
+                'KeyColumnUsage.ORDINAL_POSITION' => 'ASC'
             ])
             ->execute()
             ->all();
@@ -158,7 +161,11 @@ class MySQLTableSchema implements TableSchemaInterface
      */
     protected function readIndexes(): array
     {
-        $results = $this->schema->getConnection()->builder()
+        $binder = new ValueBinder();
+        $p0 = $binder->bind('PRIMARY');
+
+        $results = $this->schema->getConnection()
+            ->builder()
             ->table([
                 'Statistics' => 'INFORMATION_SCHEMA.STATISTICS'
             ])
@@ -186,11 +193,17 @@ class MySQLTableSchema implements TableSchemaInterface
                 'Statistics.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
                 'Statistics.TABLE_NAME' => $this->tableName
             ])
+            ->orderBy([
+                '(Statistics.INDEX_NAME = '.$p0.') ASC',
+                'Statistics.NON_UNIQUE' => 'ASC',
+                'Statistics.INDEX_NAME' => 'ASC',
+                'Statistics.SEQ_IN_INDEX' => 'ASC'
+            ])
             ->groupBy([
                 'Statistics.INDEX_NAME',
                 'Statistics.COLUMN_NAME'
             ])
-            ->execute()
+            ->execute($binder)
             ->all();
 
         $indexes = [];
@@ -209,23 +222,6 @@ class MySQLTableSchema implements TableSchemaInterface
         }
 
         return $indexes;
-    }
-
-    /**
-     * Get the database type for a column.
-     * @param array $column The column data.
-     * @return string The database type.
-     */
-    protected static function getDatabaseType(array $column): string
-    {
-        $type = $column['type'] ?? null;
-        $length = $column['length'] ?? null;
-
-        if ($type === 'tinyint' && $length === 1) {
-            return 'boolean';
-        }
-
-        return static::$types[$type] ?? 'string';
     }
 
 }
