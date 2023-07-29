@@ -209,7 +209,7 @@ $foreignKeys = $tableSchema->foreignKeys();
 
 **Get Schema**
 
-Get the *Schema*.
+Get the [*Schema*](#schemas).
 
 ```php
 $schema = $tableSchema->getSchema();
@@ -231,24 +231,6 @@ Get the [*Type*](https://github.com/elusivecodes/FyreTypeParser) parser for a co
 
 ```php
 $parser = $tableSchema->getType($name);
-```
-
-**Index**
-
-Get the data for a table index.
-
-- `$name` is a string representing the index name.
-
-```php
-$index = $tableSchema->index($name);
-```
-
-**Indexes**
-
-Get the data for all table indexes.
-
-```php
-$indexes = $tableSchema->indexes();
 ```
 
 **Has Column**
@@ -279,6 +261,24 @@ Determine if the table has an index.
 
 ```php
 $hasIndex = $tableSchema->hasIndex($name);
+```
+
+**Index**
+
+Get the data for a table index.
+
+- `$name` is a string representing the index name.
+
+```php
+$index = $tableSchema->index($name);
+```
+
+**Indexes**
+
+Get the data for all table indexes.
+
+```php
+$indexes = $tableSchema->indexes();
 ```
 
 **Is Nullable**
