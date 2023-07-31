@@ -11,7 +11,6 @@ use Fyre\Schema\Handlers\MySQL\MySQLSchema;
 use WeakMap;
 
 use function array_key_exists;
-use function array_merge;
 use function get_class;
 use function ltrim;
 

@@ -7,7 +7,6 @@ use Fyre\DB\ValueBinder;
 use Fyre\Schema\TableSchema;
 
 use function array_map;
-use function count;
 use function explode;
 use function preg_match;
 use function str_ends_with;
