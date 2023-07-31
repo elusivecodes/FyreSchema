@@ -74,6 +74,7 @@ abstract class SchemaRegistry
      * Load a Schema for a Connection.
      * @param Connection $connection The Connection.
      * @return Schema The Schema.
+     * @throws SchemaException if the handler is missing.
      */
     protected static function loadSchema(Connection $connection): Schema
     {

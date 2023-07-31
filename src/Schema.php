@@ -57,6 +57,7 @@ abstract class Schema
      * Get the TableSchema for a table.
      * @param string $name The table name.
      * @return TableSchema The TableSchema.
+     * @throws SchemaException if the table is not valid.
      */
     public function describe(string $name): TableSchema
     {
