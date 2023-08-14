@@ -11,12 +11,12 @@ use RunTimeException;
 class SchemaException extends RunTimeException
 {
 
-    public static function forInvalidTable(string $name)
+    public static function forInvalidTable(string $name): static
     {
         return new static('Invalid table schema: '.$name);
     }
 
-    public static function forMissingHandler(string $name)
+    public static function forMissingHandler(string $name): static
     {
         return new static('Missing handler for connection handler: '.$name);
     }

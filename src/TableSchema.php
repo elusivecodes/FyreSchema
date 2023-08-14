@@ -159,7 +159,7 @@ abstract class TableSchema
      * Get the data for all table foreign keys.
      * @return array The table foreign keys data.
      */
-    public function foreignKeys()
+    public function foreignKeys(): array
     {
         return $this->foreignKeys ??= $this->loadForeignKeys();
     }
