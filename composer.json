@@ -21,7 +21,7 @@
     },
     "require": {
         "fyre/cache": "^3.0",
-        "fyre/db": "^2.0",
+        "fyre/db": "^3.0",
         "fyre/typeparser": "^2.0"
     },
     "require-dev": {

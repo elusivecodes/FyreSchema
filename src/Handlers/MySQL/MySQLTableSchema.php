@@ -25,8 +25,6 @@ class MySQLTableSchema extends TableSchema
     protected function readColumns(): array
     {
         $results = $this->schema->getConnection()
-            ->builder()
-            ->table('INFORMATION_SCHEMA.COLUMNS')
             ->select([
                 'COLUMN_NAME',
                 'DATA_TYPE',
@@ -41,6 +39,7 @@ class MySQLTableSchema extends TableSchema
                 'EXTRA',
                 'COLUMN_COMMENT'
             ])
+            ->from('INFORMATION_SCHEMA.COLUMNS')
             ->where([
                 'TABLE_SCHEMA' => $this->schema->getDatabaseName(),
                 'TABLE_NAME' => $this->tableName
@@ -100,10 +99,6 @@ class MySQLTableSchema extends TableSchema
     protected function readForeignKeys(): array
     {
         $results = $this->schema->getConnection()
-            ->builder()
-            ->table([
-                'KeyColumnUsage' => 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE'
-            ])
             ->select([
                 'KeyColumnUsage.CONSTRAINT_NAME',
                 'KeyColumnUsage.COLUMN_NAME',
@@ -111,6 +106,9 @@ class MySQLTableSchema extends TableSchema
                 'KeyColumnUsage.REFERENCED_COLUMN_NAME',
                 'ReferentialConstraints.UPDATE_RULE',
                 'ReferentialConstraints.DELETE_RULE'
+            ])
+            ->from([
+                'KeyColumnUsage' => 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE'
             ])
             ->join([
                 [
@@ -164,16 +162,15 @@ class MySQLTableSchema extends TableSchema
         $p0 = $binder->bind('PRIMARY');
 
         $results = $this->schema->getConnection()
-            ->builder()
-            ->table([
-                'Statistics' => 'INFORMATION_SCHEMA.STATISTICS'
-            ])
             ->select([
                 'Statistics.INDEX_NAME',
                 'Statistics.COLUMN_NAME',
                 'Statistics.NON_UNIQUE',
                 'Statistics.INDEX_TYPE',
                 'KeyColumnUsage.CONSTRAINT_NAME'
+            ])
+            ->from([
+                'Statistics' => 'INFORMATION_SCHEMA.STATISTICS'
             ])
             ->join([
                 [
