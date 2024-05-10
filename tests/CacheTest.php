@@ -199,13 +199,19 @@ final class CacheTest extends TestCase
 
         $this->assertSame(
             [
+                'PRIMARY' => [
+                    'columns' => [
+                        'id'
+                    ],
+                    'unique' => true,
+                    'type' => 'BTREE'
+                ],
                 'name' => [
                     'columns' => [
                         'name'
                     ],
                     'unique' => true,
-                    'type' => 'BTREE',
-                    'foreignKey' => false
+                    'type' => 'BTREE'
                 ],
                 'name_value' => [
                     'columns' => [
@@ -213,16 +219,7 @@ final class CacheTest extends TestCase
                         'value'
                     ],
                     'unique' => false,
-                    'type' => 'BTREE',
-                    'foreignKey' => false
-                ],
-                'PRIMARY' => [
-                    'columns' => [
-                        'id'
-                    ],
-                    'unique' => true,
-                    'type' => 'BTREE',
-                    'foreignKey' => false
+                    'type' => 'BTREE'
                 ]
             ],
             Cache::use('schema')->get('default.test.test.indexes')

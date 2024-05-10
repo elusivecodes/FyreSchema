@@ -5,6 +5,8 @@ namespace Fyre\Schema\Handlers\MySQL;
 
 use Fyre\Schema\Schema;
 
+use function strtok;
+
 /**
  * MySQLSchema
  */
@@ -17,45 +19,20 @@ class MySQLSchema extends Schema
      */
     protected function readTables(): array
     {
-        $results = $this->connection->select([
-            'Tables.TABLE_NAME',
-            'Tables.ENGINE',
-            'CollationCharacterSetApplicability.CHARACTER_SET_NAME',
-            'Tables.TABLE_COLLATION',
-            'Tables.TABLE_COMMENT'
-        ])
-        ->from([
-            'Tables' => 'INFORMATION_SCHEMA.TABLES'
-        ])
-        ->join([
-            [
-                'table' => 'INFORMATION_SCHEMA.COLLATION_CHARACTER_SET_APPLICABILITY',
-                'alias' => 'CollationCharacterSetApplicability',
-                'type' => 'LEFT',
-                'conditions' => [
-                    'CollationCharacterSetApplicability.COLLATION_NAME = Tables.TABLE_COLLATION'
-                ]
-            ]
-        ])
-        ->where([
-            'Tables.TABLE_SCHEMA' => $this->database
-        ])
-        ->orderBy([
-            'Tables.TABLE_NAME' => 'ASC'
-        ])
-        ->execute()
-        ->all();
+        $results = $this->connection
+            ->query('SHOW TABLE STATUS')
+            ->all();
 
         $tables = [];
 
         foreach ($results AS $result) {
-            $tableName = $result['TABLE_NAME'];
+            $tableName = $result['Name'];
 
             $tables[$tableName] = [
-                'engine' => $result['ENGINE'],
-                'charset' => $result['CHARACTER_SET_NAME'],
-                'collation' => $result['TABLE_COLLATION'],
-                'comment' => $result['TABLE_COMMENT']
+                'engine' => $result['Engine'],
+                'charset' => strtok($result['Collation'], '_'),
+                'collation' => $result['Collation'],
+                'comment' => $result['Comment']
             ];
         }
 

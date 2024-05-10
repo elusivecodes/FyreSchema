@@ -14,8 +14,7 @@ trait IndexTestTrait
                     'name'
                 ],
                 'unique' => true,
-                'type' => 'BTREE',
-                'foreignKey' => false
+                'type' => 'BTREE'
             ],
             $this->schema
                 ->describe('test')
@@ -36,13 +35,19 @@ trait IndexTestTrait
     {
         $this->assertSame(
             [
+                'PRIMARY' => [
+                    'columns' => [
+                        'id'
+                    ],
+                    'unique' => true,
+                    'type' => 'BTREE'
+                ],
                 'name' => [
                     'columns' => [
                         'name'
                     ],
                     'unique' => true,
-                    'type' => 'BTREE',
-                    'foreignKey' => false
+                    'type' => 'BTREE'
                 ],
                 'name_value' => [
                     'columns' => [
@@ -50,16 +55,7 @@ trait IndexTestTrait
                         'value'
                     ],
                     'unique' => false,
-                    'type' => 'BTREE',
-                    'foreignKey' => false
-                ],
-                'PRIMARY' => [
-                    'columns' => [
-                        'id'
-                    ],
-                    'unique' => true,
-                    'type' => 'BTREE',
-                    'foreignKey' => false
+                    'type' => 'BTREE'
                 ]
             ],
             $this->schema
