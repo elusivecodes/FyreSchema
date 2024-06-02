@@ -7,10 +7,10 @@ use Fyre\Schema\TableSchema;
 
 use const FILTER_VALIDATE_FLOAT;
 
-use function array_key_exists;
 use function array_map;
 use function explode;
 use function filter_var;
+use function in_array;
 use function preg_match;
 use function str_ends_with;
 use function strtok;
@@ -68,7 +68,7 @@ class MySQLTableSchema extends TableSchema
                 $default = 'NULL';
             } else if (
                 $default &&
-                $default !== 'current_timestamp()' &&
+                !in_array($default, ['current_timestamp()', 'curdate()', 'curtime()']) &&
                 filter_var($default, FILTER_VALIDATE_FLOAT) === false
             ) {
                 $default = '\''.$default.'\'';
