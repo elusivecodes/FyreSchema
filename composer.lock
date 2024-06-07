@@ -92,16 +92,16 @@
         },
         {
             "name": "fyre/db",
-            "version": "v3.1.0",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elusivecodes/FyreDB.git",
-                "reference": "f4174a14707c9c5c5e9c935e1f4fe773cd4301be"
+                "reference": "982095a75b6a11793302d712e5daf57acafb1c51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/f4174a14707c9c5c5e9c935e1f4fe773cd4301be",
-                "reference": "f4174a14707c9c5c5e9c935e1f4fe773cd4301be",
+                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/982095a75b6a11793302d712e5daf57acafb1c51",
+                "reference": "982095a75b6a11793302d712e5daf57acafb1c51",
                 "shasum": ""
             },
             "require": {
@@ -130,9 +130,9 @@
             "description": "A database library.",
             "support": {
                 "issues": "https://github.com/elusivecodes/FyreDB/issues",
-                "source": "https://github.com/elusivecodes/FyreDB/tree/v3.1.0"
+                "source": "https://github.com/elusivecodes/FyreDB/tree/v3.1.1"
             },
-            "time": "2024-06-02T05:33:48+00:00"
+            "time": "2024-06-04T04:57:19+00:00"
         },
         {
             "name": "fyre/filesystem",
@@ -219,16 +219,16 @@
         },
         {
             "name": "fyre/typeparser",
-            "version": "v3.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elusivecodes/FyreTypeParser.git",
-                "reference": "418708462f63622923ba32b399e048e6d18e78ab"
+                "reference": "e05a0f3264be8d62f4a695cf3fcd996114bcb3f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elusivecodes/FyreTypeParser/zipball/418708462f63622923ba32b399e048e6d18e78ab",
-                "reference": "418708462f63622923ba32b399e048e6d18e78ab",
+                "url": "https://api.github.com/repos/elusivecodes/FyreTypeParser/zipball/e05a0f3264be8d62f4a695cf3fcd996114bcb3f3",
+                "reference": "e05a0f3264be8d62f4a695cf3fcd996114bcb3f3",
                 "shasum": ""
             },
             "require": {
@@ -256,9 +256,9 @@
             "description": "A database type parser library.",
             "support": {
                 "issues": "https://github.com/elusivecodes/FyreTypeParser/issues",
-                "source": "https://github.com/elusivecodes/FyreTypeParser/tree/v3.0"
+                "source": "https://github.com/elusivecodes/FyreTypeParser/tree/v3.0.1"
             },
-            "time": "2024-06-02T04:22:41+00:00"
+            "time": "2024-06-04T09:32:49+00:00"
         }
     ],
     "packages-dev": [
