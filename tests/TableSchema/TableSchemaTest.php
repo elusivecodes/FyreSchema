@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace Tests\TableSchema;
 
-use Tests\ConnectionTrait;
 use PHPUnit\Framework\TestCase;
+use Tests\ConnectionTrait;
 
 final class TableSchemaTest extends TestCase
 {
-
     use ColumnTestTrait;
     use ConnectionTrait;
     use DefaultValueTestTrait;
@@ -35,5 +34,4 @@ final class TableSchemaTest extends TestCase
                 ->getTableName()
         );
     }
-
 }

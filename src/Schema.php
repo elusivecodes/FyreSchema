@@ -15,17 +15,17 @@ use function array_keys;
  */
 abstract class Schema
 {
-
     protected Connection $connection;
 
     protected string $database;
 
-    protected array|null $tables = null;
-
     protected array $schemas = [];
+
+    protected array|null $tables = null;
 
     /**
      * New Schema constructor.
+     *
      * @param Connection The Connection.
      */
     public function __construct(Connection $connection)
@@ -38,6 +38,7 @@ abstract class Schema
 
     /**
      * Clear data from the cache.
+     *
      * @return Schema The Schema.
      */
     public function clear(): static
@@ -55,8 +56,10 @@ abstract class Schema
 
     /**
      * Get the TableSchema for a table.
+     *
      * @param string $name The table name.
      * @return TableSchema The TableSchema.
+     *
      * @throws SchemaException if the table is not valid.
      */
     public function describe(string $name): TableSchema
@@ -70,6 +73,7 @@ abstract class Schema
 
     /**
      * Get the cache prefix.
+     *
      * @return string The cache prefix.
      */
     public function getCachePrefix(): string
@@ -83,6 +87,7 @@ abstract class Schema
 
     /**
      * Get the Connection.
+     *
      * @return Connection The Connection.
      */
     public function getConnection(): Connection
@@ -92,6 +97,7 @@ abstract class Schema
 
     /**
      * Get the database name.
+     *
      * @return string The database name.
      */
     public function getDatabaseName(): string
@@ -101,6 +107,7 @@ abstract class Schema
 
     /**
      * Determine if the schema has a table.
+     *
      * @param string $name The table name.
      * @return bool TRUE if the schema has the table, otherwise FALSE.
      */
@@ -111,6 +118,7 @@ abstract class Schema
 
     /**
      * Get the data for a table.
+     *
      * @param string $name The table name.
      * @return array|null The table data.
      */
@@ -121,6 +129,7 @@ abstract class Schema
 
     /**
      * Get the names of all schema tables.
+     *
      * @return array The names of all schema tables.
      */
     public function tableNames(): array
@@ -130,6 +139,7 @@ abstract class Schema
 
     /**
      * Get the data for all schema tables.
+     *
      * @return array The schema tables data.
      */
     public function tables(): array
@@ -139,6 +149,7 @@ abstract class Schema
 
     /**
      * Load the schema tables data.
+     *
      * @return array The schema tables data.
      */
     protected function loadTables(): array
@@ -157,15 +168,16 @@ abstract class Schema
 
     /**
      * Read the schema tables data.
+     *
      * @return array The schema tables data.
      */
     abstract protected function readTables(): array;
 
     /**
      * Create a TableSchema.
+     *
      * @param string $name The table name.
      * @return TableSchema The TableSchema.
      */
     abstract protected function tableSchema(string $name): TableSchema;
-
 }

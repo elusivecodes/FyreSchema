@@ -16,25 +16,9 @@ use function getenv;
 
 trait ConnectionTrait
 {
-
     protected Connection $db;
 
     protected Schema $schema;
-
-    protected function setUp(): void
-    {
-        $this->db = ConnectionManager::use();
-        $this->schema = SchemaRegistry::getSchema($this->db);
-    }
-
-    protected function tearDown(): void
-    {
-        $folder = new Folder('tmp');
-
-        if ($folder->exists()) {
-            $folder->delete();
-        }
-    }
 
     public static function setUpBeforeClass(): void
     {
@@ -52,17 +36,17 @@ trait ConnectionTrait
                 'collation' => 'utf8mb4_unicode_ci',
                 'charset' => 'utf8mb4',
                 'compress' => true,
-                'persist' => true
-            ]
+                'persist' => true,
+            ],
         ]);
 
         Cache::setConfig([
             'schema' => [
-                'className' =>  FileCacher::class,
+                'className' => FileCacher::class,
                 'path' => 'tmp',
                 'prefix' => 'schema.',
-                'expire' => 3600
-            ]
+                'expire' => 3600,
+            ],
         ]);
 
         $cache = Cache::use('schema');
@@ -74,7 +58,7 @@ trait ConnectionTrait
         $connection->query('DROP TABLE IF EXISTS `test_values`');
         $connection->query('DROP TABLE IF EXISTS `test`');
 
-        $connection->query(<<<EOT
+        $connection->query(<<<'EOT'
             CREATE TABLE `test` (
                 `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -90,7 +74,7 @@ trait ConnectionTrait
                 INDEX `name_value` (`name`, `value`)
             ) COLLATE='utf8mb4_unicode_ci' ENGINE=InnoDB
         EOT);
-        $connection->query(<<<EOT
+        $connection->query(<<<'EOT'
             CREATE TABLE `test_values` (
                 `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `test_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -105,9 +89,20 @@ trait ConnectionTrait
 
     public static function tearDownAfterClass(): void
     {
+        $folder = new Folder('tmp');
+
+        if ($folder->exists()) {
+            $folder->delete();
+        }
+
         $connection = ConnectionManager::use();
         $connection->query('DROP TABLE IF EXISTS `test_values`');
         $connection->query('DROP TABLE IF EXISTS `test`');
     }
 
+    protected function setUp(): void
+    {
+        $this->db = ConnectionManager::use();
+        $this->schema = SchemaRegistry::getSchema($this->db);
+    }
 }

@@ -10,7 +10,6 @@ use RunTimeException;
  */
 class SchemaException extends RunTimeException
 {
-
     public static function forInvalidTable(string $name): static
     {
         return new static('Invalid table schema: '.$name);
@@ -20,5 +19,4 @@ class SchemaException extends RunTimeException
     {
         return new static('Missing handler for connection handler: '.$name);
     }
-
 }

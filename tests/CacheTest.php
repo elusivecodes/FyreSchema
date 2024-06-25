@@ -8,31 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 final class CacheTest extends TestCase
 {
-
     use ConnectionTrait;
-
-    public function testCacheTables(): void
-    {
-        $this->schema->tables();
-
-        $this->assertSame(
-            [
-                'test' => [
-                    'engine' => 'InnoDB',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'comment' => ''
-                ],
-                'test_values' => [
-                    'engine' => 'InnoDB',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'comment' => ''
-                ]
-            ],
-            Cache::use('schema')->get('default.test.tables')
-        );
-    }
 
     public function testCacheColumns(): void
     {
@@ -53,7 +29,7 @@ final class CacheTest extends TestCase
                     'charset' => null,
                     'collation' => null,
                     'extra' => 'auto_increment',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'name' => [
                     'type' => 'varchar',
@@ -66,7 +42,7 @@ final class CacheTest extends TestCase
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'value' => [
                     'type' => 'int',
@@ -79,7 +55,7 @@ final class CacheTest extends TestCase
                     'charset' => null,
                     'collation' => null,
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'price' => [
                     'type' => 'decimal',
@@ -92,7 +68,7 @@ final class CacheTest extends TestCase
                     'charset' => null,
                     'collation' => null,
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'text' => [
                     'type' => 'varchar',
@@ -105,7 +81,7 @@ final class CacheTest extends TestCase
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'test' => [
                     'type' => 'enum',
@@ -113,7 +89,7 @@ final class CacheTest extends TestCase
                     'precision' => null,
                     'values' => [
                         'Y',
-                        'N'
+                        'N',
                     ],
                     'nullable' => false,
                     'unsigned' => false,
@@ -121,7 +97,7 @@ final class CacheTest extends TestCase
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'bool' => [
                     'type' => 'tinyint',
@@ -134,7 +110,7 @@ final class CacheTest extends TestCase
                     'charset' => null,
                     'collation' => null,
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'created' => [
                     'type' => 'datetime',
@@ -147,7 +123,7 @@ final class CacheTest extends TestCase
                     'charset' => null,
                     'collation' => null,
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'modified' => [
                     'type' => 'datetime',
@@ -160,8 +136,8 @@ final class CacheTest extends TestCase
                     'charset' => null,
                     'collation' => null,
                     'extra' => 'on update current_timestamp()',
-                    'comment' => ''
-                ]
+                    'comment' => '',
+                ],
             ],
             Cache::use('schema')->get('default.test.test.columns')
         );
@@ -177,15 +153,15 @@ final class CacheTest extends TestCase
             [
                 'test_values_test_id' => [
                     'columns' => [
-                        'test_id'
+                        'test_id',
                     ],
                     'referencedTable' => 'test',
                     'referencedColumns' => [
-                        'id'
+                        'id',
                     ],
                     'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
+                    'delete' => 'CASCADE',
+                ],
             ],
             Cache::use('schema')->get('default.test.test_values.foreign_keys')
         );
@@ -201,29 +177,51 @@ final class CacheTest extends TestCase
             [
                 'PRIMARY' => [
                     'columns' => [
-                        'id'
+                        'id',
                     ],
                     'unique' => true,
-                    'type' => 'BTREE'
+                    'type' => 'BTREE',
                 ],
                 'name' => [
                     'columns' => [
-                        'name'
+                        'name',
                     ],
                     'unique' => true,
-                    'type' => 'BTREE'
+                    'type' => 'BTREE',
                 ],
                 'name_value' => [
                     'columns' => [
                         'name',
-                        'value'
+                        'value',
                     ],
                     'unique' => false,
-                    'type' => 'BTREE'
-                ]
+                    'type' => 'BTREE',
+                ],
             ],
             Cache::use('schema')->get('default.test.test.indexes')
         );
     }
 
+    public function testCacheTables(): void
+    {
+        $this->schema->tables();
+
+        $this->assertSame(
+            [
+                'test' => [
+                    'engine' => 'InnoDB',
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'comment' => '',
+                ],
+                'test_values' => [
+                    'engine' => 'InnoDB',
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'comment' => '',
+                ],
+            ],
+            Cache::use('schema')->get('default.test.tables')
+        );
+    }
 }

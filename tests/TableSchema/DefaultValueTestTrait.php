@@ -5,7 +5,6 @@ namespace Tests\TableSchema;
 
 trait DefaultValueTestTrait
 {
-
     public function testDefaultValue(): void
     {
         $this->assertSame(
@@ -13,25 +12,6 @@ trait DefaultValueTestTrait
             $this->schema
                 ->describe('test')
                 ->defaultValue('text')
-        );
-    }
-
-    public function testDefaultValueNull(): void
-    {
-        $this->assertNull(
-            $this->schema
-                ->describe('test')
-                ->defaultValue('name')
-        );
-    }
-
-    public function testDefaultValueInt(): void
-    {
-        $this->assertSame(
-            5,
-            $this->schema
-                ->describe('test')
-                ->defaultValue('value')
         );
     }
 
@@ -55,12 +35,12 @@ trait DefaultValueTestTrait
         );
     }
 
-    public function testDefaultValueNone(): void
+    public function testDefaultValueInt(): void
     {
         $this->assertSame(
-            '',
+            5,
             $this->schema
-                ->describe('test_values')
+                ->describe('test')
                 ->defaultValue('value')
         );
     }
@@ -74,4 +54,22 @@ trait DefaultValueTestTrait
         );
     }
 
+    public function testDefaultValueNone(): void
+    {
+        $this->assertSame(
+            '',
+            $this->schema
+                ->describe('test_values')
+                ->defaultValue('value')
+        );
+    }
+
+    public function testDefaultValueNull(): void
+    {
+        $this->assertNull(
+            $this->schema
+                ->describe('test')
+                ->defaultValue('name')
+        );
+    }
 }

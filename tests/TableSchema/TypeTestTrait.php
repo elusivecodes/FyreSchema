@@ -10,13 +10,21 @@ use Fyre\DB\Types\StringType;
 
 trait TypeTestTrait
 {
-
     public function testGetType(): void
     {
         $this->assertInstanceOf(
             StringType::class,
             $this->schema->describe('test')
                 ->getType('name')
+        );
+    }
+
+    public function testGetTypeBoolean(): void
+    {
+        $this->assertInstanceOf(
+            BooleanType::class,
+            $this->schema->describe('test')
+                ->getType('bool')
         );
     }
 
@@ -37,14 +45,4 @@ trait TypeTestTrait
                 ->getType('price')
         );
     }
-
-    public function testGetTypeBoolean(): void
-    {
-        $this->assertInstanceOf(
-            BooleanType::class,
-            $this->schema->describe('test')
-                ->getType('bool')
-        );
-    }
-
 }

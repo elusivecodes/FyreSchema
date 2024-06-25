@@ -19,7 +19,6 @@ use function strtolower;
  */
 abstract class TableSchema
 {
-
     protected static array $types = [
         'bigint' => 'integer',
         'boolean' => 'boolean',
@@ -33,21 +32,22 @@ abstract class TableSchema
         'smallint' => 'integer',
         'time' => 'time',
         'timestamp' => 'datetime',
-        'tinyint' => 'integer'
+        'tinyint' => 'integer',
     ];
+
+    protected array|null $columns = null;
+
+    protected array|null $foreignKeys = null;
+
+    protected array|null $indexes = null;
 
     protected Schema $schema;
 
     protected string $tableName;
 
-    protected array|null $columns = null;
-
-    protected array|null $indexes = null;
-
-    protected array|null $foreignKeys = null;
-
     /**
      * New TableSchema constructor.
+     *
      * @param Schema $schema The Schema.
      * @param string $tableName The table name.
      */
@@ -59,6 +59,7 @@ abstract class TableSchema
 
     /**
      * Clear data from the cache.
+     *
      * @return TableSchema The TableSchema.
      */
     public function clear(): static
@@ -67,7 +68,7 @@ abstract class TableSchema
 
         if ($cache) {
             $prefix = $this->schema->getCachePrefix();
-            foreach (['columns', 'indexes', 'foreign_keys'] AS $key) {
+            foreach (['columns', 'indexes', 'foreign_keys'] as $key) {
                 $cache->delete($prefix.'.'.$key);
             }
         }
@@ -81,6 +82,7 @@ abstract class TableSchema
 
     /**
      * Get the data for a table column.
+     *
      * @param string $name The column name.
      * @return array|null The column data.
      */
@@ -91,6 +93,7 @@ abstract class TableSchema
 
     /**
      * Get the names of all table columns.
+     *
      * @return array The names of all table columns.
      */
     public function columnNames(): array
@@ -100,6 +103,7 @@ abstract class TableSchema
 
     /**
      * Get the data for all table columns.
+     *
      * @return array The table columns data.
      */
     public function columns(): array
@@ -109,6 +113,7 @@ abstract class TableSchema
 
     /**
      * Get the default value for a column.
+     *
      * @param string $name The column name.
      * @return mixed The default value.
      */
@@ -147,6 +152,7 @@ abstract class TableSchema
 
     /**
      * Get the data for a table foreign key.
+     *
      * @param string $name The foreign key name.
      * @return array|null The foreign key data.
      */
@@ -157,6 +163,7 @@ abstract class TableSchema
 
     /**
      * Get the data for all table foreign keys.
+     *
      * @return array The table foreign keys data.
      */
     public function foreignKeys(): array
@@ -166,6 +173,7 @@ abstract class TableSchema
 
     /**
      * Get the Schema.
+     *
      * @return Schema The Schema.
      */
     public function getSchema(): Schema
@@ -175,6 +183,7 @@ abstract class TableSchema
 
     /**
      * Get the table name.
+     *
      * @return string The table name.
      */
     public function getTableName(): string
@@ -184,6 +193,7 @@ abstract class TableSchema
 
     /**
      * Get a Type class for a column.
+     *
      * @param string $name The column name.
      * @return Type|null The Type.
      */
@@ -201,26 +211,8 @@ abstract class TableSchema
     }
 
     /**
-     * Get the data for a table index.
-     * @param string $name The index name.
-     * @return array|null The index data.
-     */
-    public function index(string $name): array|null
-    {
-        return $this->indexes()[$name] ?? null;
-    }
-
-    /**
-     * Get the data for all table indexes.
-     * @return array The table indexes data.
-     */
-    public function indexes(): array
-    {
-        return $this->indexes ??= $this->loadIndexes();
-    }
-
-    /**
      * Determine if the table has a column.
+     *
      * @param string $name The column name.
      * @return bool TRUE if the table has the column, otherwise FALSE.
      */
@@ -231,6 +223,7 @@ abstract class TableSchema
 
     /**
      * Determine if the table has a foreign key.
+     *
      * @param string $name The foreign key name.
      * @return bool TRUE if the table has the foreign key, otherwise FALSE.
      */
@@ -241,6 +234,7 @@ abstract class TableSchema
 
     /**
      * Determine if the table has an index.
+     *
      * @param string $name The index name.
      * @return bool TRUE if the table has the index, otherwise FALSE.
      */
@@ -250,7 +244,29 @@ abstract class TableSchema
     }
 
     /**
+     * Get the data for a table index.
+     *
+     * @param string $name The index name.
+     * @return array|null The index data.
+     */
+    public function index(string $name): array|null
+    {
+        return $this->indexes()[$name] ?? null;
+    }
+
+    /**
+     * Get the data for all table indexes.
+     *
+     * @return array The table indexes data.
+     */
+    public function indexes(): array
+    {
+        return $this->indexes ??= $this->loadIndexes();
+    }
+
+    /**
      * Determine if a table column is nullable.
+     *
      * @param string $name The column name.
      * @return bool TRUE if the column is nullable, otherwise FALSE.
      */
@@ -261,6 +277,7 @@ abstract class TableSchema
 
     /**
      * Get the primary key for the table.
+     *
      * @return array|null The table primary key.
      */
     public function primaryKey(): array|null
@@ -270,6 +287,7 @@ abstract class TableSchema
 
     /**
      * Load the table data.
+     *
      * @param string $key The data key.
      * @param Closure $callback The data callback.
      * @return array The table data.
@@ -290,6 +308,7 @@ abstract class TableSchema
 
     /**
      * Load the table columns data.
+     *
      * @return array The table columns data.
      */
     protected function loadColumns(): array
@@ -302,6 +321,7 @@ abstract class TableSchema
 
     /**
      * Load the table foreign keys data.
+     *
      * @return array The table foreign keys data.
      */
     protected function loadForeignKeys(): array
@@ -314,6 +334,7 @@ abstract class TableSchema
 
     /**
      * Load the table indexes data.
+     *
      * @return array The table indexes data.
      */
     protected function loadIndexes(): array
@@ -326,24 +347,28 @@ abstract class TableSchema
 
     /**
      * Read the table columns data.
+     *
      * @return array The table columns data.
      */
     abstract protected function readColumns(): array;
 
     /**
      * Read the table foreign keys data.
+     *
      * @return array The table foreign keys data.
      */
     abstract protected function readForeignKeys(): array;
 
     /**
      * Read the table indexes data.
+     *
      * @return array The table indexes data.
      */
     abstract protected function readIndexes(): array;
 
     /**
      * Get the database type for a column.
+     *
      * @param array $column The column data.
      * @return string The database type.
      */
@@ -358,5 +383,4 @@ abstract class TableSchema
 
         return static::$types[$type] ?? 'string';
     }
-
 }

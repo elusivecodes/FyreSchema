@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 final class SchemaTest extends TestCase
 {
-
     use ConnectionTrait;
 
     public function testGetConnection(): void
@@ -47,7 +46,7 @@ final class SchemaTest extends TestCase
                 'engine' => 'InnoDB',
                 'charset' => 'utf8mb4',
                 'collation' => 'utf8mb4_unicode_ci',
-                'comment' => ''
+                'comment' => '',
             ],
             $this->schema->table('test')
         );
@@ -65,7 +64,7 @@ final class SchemaTest extends TestCase
         $this->assertSame(
             [
                 'test',
-                'test_values'
+                'test_values',
             ],
             $this->schema->tableNames()
         );
@@ -79,17 +78,16 @@ final class SchemaTest extends TestCase
                     'engine' => 'InnoDB',
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'test_values' => [
                     'engine' => 'InnoDB',
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
-                    'comment' => ''
-                ]
+                    'comment' => '',
+                ],
             ],
             $this->schema->tables()
         );
     }
-
 }

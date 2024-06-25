@@ -18,9 +18,9 @@ use function substr;
  */
 class MySQLTableSchema extends TableSchema
 {
-
     /**
      * Read the table columns data.
+     *
      * @return array The table columns data.
      */
     protected function readColumns(): array
@@ -38,22 +38,22 @@ class MySQLTableSchema extends TableSchema
                 'CHARACTER_SET_NAME',
                 'COLLATION_NAME',
                 'EXTRA',
-                'COLUMN_COMMENT'
+                'COLUMN_COMMENT',
             ])
             ->from('INFORMATION_SCHEMA.COLUMNS')
             ->where([
                 'TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'TABLE_NAME' => $this->tableName
+                'TABLE_NAME' => $this->tableName,
             ])
             ->orderBy([
-                'ORDINAL_POSITION' => 'ASC'
+                'ORDINAL_POSITION' => 'ASC',
             ])
             ->execute()
             ->all();
 
         $columns = [];
 
-        foreach ($results AS $result) {
+        foreach ($results as $result) {
             $columnName = $result['COLUMN_NAME'];
 
             $values = null;
@@ -85,7 +85,7 @@ class MySQLTableSchema extends TableSchema
                 'charset' => $result['CHARACTER_SET_NAME'],
                 'collation' => $result['COLLATION_NAME'],
                 'extra' => $result['EXTRA'],
-                'comment' => $result['COLUMN_COMMENT']
+                'comment' => $result['COLUMN_COMMENT'],
             ];
         }
 
@@ -94,6 +94,7 @@ class MySQLTableSchema extends TableSchema
 
     /**
      * Read the table foreign keys data.
+     *
      * @return array The table foreign keys data.
      */
     protected function readForeignKeys(): array
@@ -105,10 +106,10 @@ class MySQLTableSchema extends TableSchema
                 'KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME',
                 'KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME',
                 'REFERENTIAL_CONSTRAINTS.UPDATE_RULE',
-                'REFERENTIAL_CONSTRAINTS.DELETE_RULE'
+                'REFERENTIAL_CONSTRAINTS.DELETE_RULE',
             ])
             ->from([
-                'INFORMATION_SCHEMA.KEY_COLUMN_USAGE'
+                'INFORMATION_SCHEMA.KEY_COLUMN_USAGE',
             ])
             ->join([
                 [
@@ -117,23 +118,23 @@ class MySQLTableSchema extends TableSchema
                     'conditions' => [
                         'REFERENTIAL_CONSTRAINTS.CONSTRAINT_SCHEMA = KEY_COLUMN_USAGE.CONSTRAINT_SCHEMA',
                         'REFERENTIAL_CONSTRAINTS.CONSTRAINT_NAME = KEY_COLUMN_USAGE.CONSTRAINT_NAME',
-                        'REFERENTIAL_CONSTRAINTS.TABLE_NAME = KEY_COLUMN_USAGE.TABLE_NAME'
-                    ]
-                ]
+                        'REFERENTIAL_CONSTRAINTS.TABLE_NAME = KEY_COLUMN_USAGE.TABLE_NAME',
+                    ],
+                ],
             ])
             ->where([
                 'KEY_COLUMN_USAGE.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'KEY_COLUMN_USAGE.TABLE_NAME' => $this->tableName
+                'KEY_COLUMN_USAGE.TABLE_NAME' => $this->tableName,
             ])
             ->orderBy([
-                'KEY_COLUMN_USAGE.ORDINAL_POSITION' => 'ASC'
+                'KEY_COLUMN_USAGE.ORDINAL_POSITION' => 'ASC',
             ])
             ->execute()
             ->all();
 
         $foreignKeys = [];
 
-        foreach ($results AS $result) {
+        foreach ($results as $result) {
             $constraintName = $result['CONSTRAINT_NAME'];
 
             $foreignKeys[$constraintName] ??= [
@@ -141,7 +142,7 @@ class MySQLTableSchema extends TableSchema
                 'referencedTable' => $result['REFERENCED_TABLE_NAME'],
                 'referencedColumns' => [],
                 'update' => $result['UPDATE_RULE'],
-                'delete' => $result['DELETE_RULE']
+                'delete' => $result['DELETE_RULE'],
             ];
 
             $foreignKeys[$constraintName]['columns'][] = $result['COLUMN_NAME'];
@@ -153,6 +154,7 @@ class MySQLTableSchema extends TableSchema
 
     /**
      * Read the table indexes data.
+     *
      * @return array The table indexes data.
      */
     protected function readIndexes(): array
@@ -165,37 +167,37 @@ class MySQLTableSchema extends TableSchema
                 'INDEX_NAME',
                 'COLUMN_NAME',
                 'NON_UNIQUE',
-                'INDEX_TYPE'
+                'INDEX_TYPE',
             ])
             ->from([
-                'INFORMATION_SCHEMA.STATISTICS'
+                'INFORMATION_SCHEMA.STATISTICS',
             ])
             ->where([
                 'TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'TABLE_NAME' => $this->tableName
+                'TABLE_NAME' => $this->tableName,
             ])
             ->orderBy([
                 '(INDEX_NAME = '.$p0.') DESC',
                 'NON_UNIQUE' => 'ASC',
                 'INDEX_NAME' => 'ASC',
-                'SEQ_IN_INDEX' => 'ASC'
+                'SEQ_IN_INDEX' => 'ASC',
             ])
             ->groupBy([
                 'INDEX_NAME',
-                'COLUMN_NAME'
+                'COLUMN_NAME',
             ])
             ->execute($binder)
             ->all();
 
         $indexes = [];
 
-        foreach ($results AS $result) {
+        foreach ($results as $result) {
             $indexName = $result['INDEX_NAME'];
 
             $indexes[$indexName] ??= [
                 'columns' => [],
                 'unique' => !$result['NON_UNIQUE'],
-                'type' => $result['INDEX_TYPE']
+                'type' => $result['INDEX_TYPE'],
             ];
 
             $indexes[$indexName]['columns'][] = $result['COLUMN_NAME'];
@@ -203,5 +205,4 @@ class MySQLTableSchema extends TableSchema
 
         return $indexes;
     }
-
 }

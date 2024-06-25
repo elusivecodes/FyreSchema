@@ -19,17 +19,17 @@ use function ltrim;
  */
 abstract class SchemaRegistry
 {
+    protected static Cacher|null $cache = null;
 
     protected static array $handlers = [
-        MySQLConnection::class => MySQLSchema::class
+        MySQLConnection::class => MySQLSchema::class,
     ];
 
     protected static WeakMap $schemas;
 
-    protected static Cacher|null $cache = null;
-
     /**
      * Get the Cache.
+     *
      * @return Cacher|null The Cacher.
      */
     public static function getCache(): Cacher|null
@@ -39,18 +39,20 @@ abstract class SchemaRegistry
 
     /**
      * Get the Schema for a Connection.
+     *
      * @param Connection $connection The Connection.
      * @return Schema The Schema.
      */
     public static function getSchema(Connection $connection): Schema
     {
-        static::$schemas ??= new WeakMap;
+        static::$schemas ??= new WeakMap();
 
         return static::$schemas[$connection] ??= static::loadSchema($connection);
     }
 
     /**
      * Set the Cache.
+     *
      * @param Cacher|null $cache The Cacher.
      */
     public static function setCache(Cacher|null $cache): void
@@ -60,6 +62,7 @@ abstract class SchemaRegistry
 
     /**
      * Set a Schema handler for a Connection class.
+     *
      * @param string $connectionClass The Connection class.
      * @param string $schemaClass The Schema class.
      */
@@ -72,8 +75,10 @@ abstract class SchemaRegistry
 
     /**
      * Load a Schema for a Connection.
+     *
      * @param Connection $connection The Connection.
      * @return Schema The Schema.
+     *
      * @throws SchemaException if the handler is missing.
      */
     protected static function loadSchema(Connection $connection): Schema
@@ -88,5 +93,4 @@ abstract class SchemaRegistry
 
         return new $schemaClass($connection);
     }
-
 }

@@ -5,7 +5,6 @@ namespace Tests\TableSchema;
 
 trait ColumnTestTrait
 {
-
     public function testColumn(): void
     {
         $this->assertSame(
@@ -20,7 +19,7 @@ trait ColumnTestTrait
                 'charset' => 'utf8mb4',
                 'collation' => 'utf8mb4_unicode_ci',
                 'extra' => '',
-                'comment' => ''
+                'comment' => '',
             ],
             $this->schema
                 ->describe('test')
@@ -49,7 +48,7 @@ trait ColumnTestTrait
                 'test',
                 'bool',
                 'created',
-                'modified'
+                'modified',
             ],
             $this->schema->describe('test')->columnNames()
         );
@@ -70,7 +69,7 @@ trait ColumnTestTrait
                     'charset' => null,
                     'collation' => null,
                     'extra' => 'auto_increment',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'name' => [
                     'type' => 'varchar',
@@ -83,7 +82,7 @@ trait ColumnTestTrait
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'value' => [
                     'type' => 'int',
@@ -96,7 +95,7 @@ trait ColumnTestTrait
                     'charset' => null,
                     'collation' => null,
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'price' => [
                     'type' => 'decimal',
@@ -109,7 +108,7 @@ trait ColumnTestTrait
                     'charset' => null,
                     'collation' => null,
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'text' => [
                     'type' => 'varchar',
@@ -122,7 +121,7 @@ trait ColumnTestTrait
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'test' => [
                     'type' => 'enum',
@@ -130,7 +129,7 @@ trait ColumnTestTrait
                     'precision' => null,
                     'values' => [
                         'Y',
-                        'N'
+                        'N',
                     ],
                     'nullable' => false,
                     'unsigned' => false,
@@ -138,7 +137,7 @@ trait ColumnTestTrait
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'bool' => [
                     'type' => 'tinyint',
@@ -151,7 +150,7 @@ trait ColumnTestTrait
                     'charset' => null,
                     'collation' => null,
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'created' => [
                     'type' => 'datetime',
@@ -164,7 +163,7 @@ trait ColumnTestTrait
                     'charset' => null,
                     'collation' => null,
                     'extra' => '',
-                    'comment' => ''
+                    'comment' => '',
                 ],
                 'modified' => [
                     'type' => 'datetime',
@@ -177,8 +176,8 @@ trait ColumnTestTrait
                     'charset' => null,
                     'collation' => null,
                     'extra' => 'on update current_timestamp()',
-                    'comment' => ''
-                ]
+                    'comment' => '',
+                ],
             ],
             $this->schema
                 ->describe('test')
@@ -230,5 +229,4 @@ trait ColumnTestTrait
                 ->isNullable('invalid')
         );
     }
-
 }

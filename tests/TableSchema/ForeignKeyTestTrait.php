@@ -5,20 +5,19 @@ namespace Tests\TableSchema;
 
 trait ForeignKeyTestTrait
 {
-
     public function testForeignKey(): void
     {
         $this->assertSame(
             [
                 'columns' => [
-                    'test_id'
+                    'test_id',
                 ],
                 'referencedTable' => 'test',
                 'referencedColumns' => [
-                    'id'
+                    'id',
                 ],
                 'update' => 'CASCADE',
-                'delete' => 'CASCADE'
+                'delete' => 'CASCADE',
             ],
             $this->schema
                 ->describe('test_values')
@@ -41,15 +40,15 @@ trait ForeignKeyTestTrait
             [
                 'test_values_test_id' => [
                     'columns' => [
-                        'test_id'
+                        'test_id',
                     ],
                     'referencedTable' => 'test',
                     'referencedColumns' => [
-                        'id'
+                        'id',
                     ],
                     'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
+                    'delete' => 'CASCADE',
+                ],
             ],
             $this->schema
                 ->describe('test_values')
@@ -74,5 +73,4 @@ trait ForeignKeyTestTrait
                 ->hasForeignKey('invalid')
         );
     }
-
 }
