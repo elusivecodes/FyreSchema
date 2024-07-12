@@ -1,22 +1,61 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\Mysql\TableSchema;
 
-use Fyre\Cache\Cache;
-use PHPUnit\Framework\TestCase;
-use Tests\Mysql\MysqlConnectionTrait;
-
-final class CacheTest extends TestCase
+trait ColumnTestTrait
 {
-    use MysqlConnectionTrait;
-
-    public function testCacheColumns(): void
+    public function testColumn(): void
     {
-        $this->schema
-            ->describe('test')
-            ->columns();
+        $this->assertSame(
+            [
+                'type' => 'varchar',
+                'length' => 255,
+                'precision' => null,
+                'values' => null,
+                'nullable' => true,
+                'unsigned' => false,
+                'default' => 'NULL',
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'comment' => '',
+                'autoIncrement' => false,
+            ],
+            $this->schema
+                ->describe('test')
+                ->column('name')
+        );
+    }
 
+    public function testColumnInvalid(): void
+    {
+        $this->assertNull(
+            $this->schema
+                ->describe('test')
+                ->column('invalid')
+        );
+    }
+
+    public function testColumnNames(): void
+    {
+        $this->assertSame(
+            [
+                'id',
+                'name',
+                'value',
+                'price',
+                'text',
+                'test',
+                'bool',
+                'created',
+                'modified',
+            ],
+            $this->schema->describe('test')->columnNames()
+        );
+    }
+
+    public function testColumns(): void
+    {
         $this->assertSame(
             [
                 'id' => [
@@ -140,92 +179,63 @@ final class CacheTest extends TestCase
                     'autoIncrement' => false,
                 ],
             ],
-            Cache::use('schema')->get('default.test.test.columns')
+            $this->schema
+                ->describe('test')
+                ->columns()
         );
     }
 
-    public function testCacheForeignKeys(): void
+    public function testHasAutoincrement(): void
     {
-        $this->schema
-            ->describe('test_values')
-            ->foreignKeys();
-
-        $this->assertSame(
-            [
-                'test_values_test_id' => [
-                    'columns' => [
-                        'test_id',
-                    ],
-                    'referencedTable' => 'test',
-                    'referencedColumns' => [
-                        'id',
-                    ],
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE',
-                ],
-            ],
-            Cache::use('schema')->get('default.test.test_values.foreign_keys')
+        $this->assertTrue(
+            $this->schema
+                ->describe('test')
+                ->hasAutoIncrement()
         );
     }
 
-    public function testCacheIndexes(): void
+    public function testHasColumn(): void
     {
-        $this->schema
-            ->describe('test')
-            ->indexes();
-
-        $this->assertSame(
-            [
-                'PRIMARY' => [
-                    'columns' => [
-                        'id',
-                    ],
-                    'unique' => true,
-                    'primary' => true,
-                    'type' => 'BTREE',
-                ],
-                'name' => [
-                    'columns' => [
-                        'name',
-                    ],
-                    'unique' => true,
-                    'primary' => false,
-                    'type' => 'BTREE',
-                ],
-                'name_value' => [
-                    'columns' => [
-                        'name',
-                        'value',
-                    ],
-                    'unique' => false,
-                    'primary' => false,
-                    'type' => 'BTREE',
-                ],
-            ],
-            Cache::use('schema')->get('default.test.test.indexes')
+        $this->assertTrue(
+            $this->schema
+                ->describe('test')
+                ->hasColumn('name')
         );
     }
 
-    public function testCacheTables(): void
+    public function testHasColumnInvalid(): void
     {
-        $this->schema->tables();
+        $this->assertFalse(
+            $this->schema
+                ->describe('test')
+                ->hasColumn('invalid')
+        );
+    }
 
-        $this->assertSame(
-            [
-                'test' => [
-                    'engine' => 'InnoDB',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'comment' => '',
-                ],
-                'test_values' => [
-                    'engine' => 'InnoDB',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'comment' => '',
-                ],
-            ],
-            Cache::use('schema')->get('default.test.tables')
+    public function testIsNullable(): void
+    {
+        $this->assertTrue(
+            $this->schema
+                ->describe('test')
+                ->isNullable('name')
+        );
+    }
+
+    public function testIsNullableFalse(): void
+    {
+        $this->assertFalse(
+            $this->schema
+                ->describe('test')
+                ->isNullable('id')
+        );
+    }
+
+    public function testIsNullableInvalid(): void
+    {
+        $this->assertFalse(
+            $this->schema
+                ->describe('test')
+                ->isNullable('invalid')
         );
     }
 }

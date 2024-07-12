@@ -9,6 +9,7 @@ use Fyre\DB\ConnectionManager;
 use Fyre\Schema\Exceptions\SchemaException;
 
 use function array_keys;
+use function str_replace;
 
 /**
  * Schema
@@ -79,10 +80,11 @@ abstract class Schema
     public function getCachePrefix(): string
     {
         $key = ConnectionManager::getKey($this->connection);
+        $db = str_replace(':', '_', $this->database);
 
         return $key ?
-            $key.'.'.$this->database :
-            $this->database;
+            $key.'.'.$db :
+            $db;
     }
 
     /**

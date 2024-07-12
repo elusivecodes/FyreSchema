@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\TableSchema;
+namespace Tests\Postgres\TableSchema;
 
 trait ColumnTestTrait
 {
@@ -12,14 +12,10 @@ trait ColumnTestTrait
                 'type' => 'varchar',
                 'length' => 255,
                 'precision' => null,
-                'values' => null,
                 'nullable' => true,
-                'unsigned' => false,
                 'default' => 'NULL',
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'extra' => '',
                 'comment' => '',
+                'autoIncrement' => false,
             ],
             $this->schema
                 ->describe('test')
@@ -45,7 +41,6 @@ trait ColumnTestTrait
                 'value',
                 'price',
                 'text',
-                'test',
                 'bool',
                 'created',
                 'modified',
@@ -59,129 +54,90 @@ trait ColumnTestTrait
         $this->assertSame(
             [
                 'id' => [
-                    'type' => 'int',
-                    'length' => 10,
+                    'type' => 'integer',
+                    'length' => 32,
                     'precision' => 0,
-                    'values' => null,
                     'nullable' => false,
-                    'unsigned' => true,
                     'default' => null,
-                    'charset' => null,
-                    'collation' => null,
-                    'extra' => 'auto_increment',
                     'comment' => '',
+                    'autoIncrement' => true,
                 ],
                 'name' => [
                     'type' => 'varchar',
                     'length' => 255,
                     'precision' => null,
-                    'values' => null,
                     'nullable' => true,
-                    'unsigned' => false,
                     'default' => 'NULL',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'extra' => '',
                     'comment' => '',
+                    'autoIncrement' => false,
                 ],
                 'value' => [
-                    'type' => 'int',
-                    'length' => 10,
+                    'type' => 'integer',
+                    'length' => 32,
                     'precision' => 0,
-                    'values' => null,
                     'nullable' => false,
-                    'unsigned' => true,
                     'default' => '5',
-                    'charset' => null,
-                    'collation' => null,
-                    'extra' => '',
                     'comment' => '',
+                    'autoIncrement' => false,
                 ],
                 'price' => [
-                    'type' => 'decimal',
+                    'type' => 'numeric',
                     'length' => 10,
                     'precision' => 2,
-                    'values' => null,
                     'nullable' => false,
-                    'unsigned' => true,
                     'default' => '2.50',
-                    'charset' => null,
-                    'collation' => null,
-                    'extra' => '',
                     'comment' => '',
+                    'autoIncrement' => false,
                 ],
                 'text' => [
                     'type' => 'varchar',
                     'length' => 255,
                     'precision' => null,
-                    'values' => null,
                     'nullable' => false,
-                    'unsigned' => false,
                     'default' => '\'default\'',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'extra' => '',
                     'comment' => '',
-                ],
-                'test' => [
-                    'type' => 'enum',
-                    'length' => null,
-                    'precision' => null,
-                    'values' => [
-                        'Y',
-                        'N',
-                    ],
-                    'nullable' => false,
-                    'unsigned' => false,
-                    'default' => '\'Y\'',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'extra' => '',
-                    'comment' => '',
+                    'autoIncrement' => false,
                 ],
                 'bool' => [
-                    'type' => 'tinyint',
-                    'length' => 1,
-                    'precision' => 0,
-                    'values' => null,
+                    'type' => 'boolean',
+                    'length' => null,
+                    'precision' => null,
                     'nullable' => false,
-                    'unsigned' => true,
-                    'default' => '0',
-                    'charset' => null,
-                    'collation' => null,
-                    'extra' => '',
+                    'default' => 'false',
                     'comment' => '',
+                    'autoIncrement' => false,
                 ],
                 'created' => [
-                    'type' => 'datetime',
+                    'type' => 'timestamp',
                     'length' => null,
-                    'precision' => null,
-                    'values' => null,
+                    'precision' => 6,
                     'nullable' => false,
-                    'unsigned' => false,
-                    'default' => 'current_timestamp()',
-                    'charset' => null,
-                    'collation' => null,
-                    'extra' => '',
+                    'default' => 'LOCALTIMESTAMP(0)',
                     'comment' => '',
+                    'autoIncrement' => false,
                 ],
                 'modified' => [
-                    'type' => 'datetime',
+                    'type' => 'timestamp',
                     'length' => null,
-                    'precision' => null,
-                    'values' => null,
+                    'precision' => 6,
                     'nullable' => true,
-                    'unsigned' => false,
-                    'default' => 'current_timestamp()',
-                    'charset' => null,
-                    'collation' => null,
-                    'extra' => 'on update current_timestamp()',
+                    'default' => 'LOCALTIMESTAMP(0)',
                     'comment' => '',
+                    'autoIncrement' => false,
                 ],
             ],
             $this->schema
                 ->describe('test')
                 ->columns()
+        );
+    }
+
+    public function testHasAutoincrement(): void
+    {
+        $this->assertTrue(
+            $this->schema
+                ->describe('test')
+                ->hasAutoIncrement()
         );
     }
 

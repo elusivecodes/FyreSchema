@@ -1,0 +1,99 @@
+<?php
+declare(strict_types=1);
+
+namespace Tests\Mysql\TableSchema;
+
+trait IndexTestTrait
+{
+    public function testHasIndex(): void
+    {
+        $this->assertTrue(
+            $this->schema
+                ->describe('test')
+                ->hasIndex('name')
+        );
+    }
+
+    public function testHasIndexInvalid(): void
+    {
+        $this->assertFalse(
+            $this->schema
+                ->describe('test')
+                ->hasIndex('invalid')
+        );
+    }
+
+    public function testIndex(): void
+    {
+        $this->assertSame(
+            [
+                'columns' => [
+                    'name',
+                ],
+                'unique' => true,
+                'primary' => false,
+                'type' => 'BTREE',
+            ],
+            $this->schema
+                ->describe('test')
+                ->index('name')
+        );
+    }
+
+    public function testIndexes(): void
+    {
+        $this->assertSame(
+            [
+                'PRIMARY' => [
+                    'columns' => [
+                        'id',
+                    ],
+                    'unique' => true,
+                    'primary' => true,
+                    'type' => 'BTREE',
+                ],
+                'name' => [
+                    'columns' => [
+                        'name',
+                    ],
+                    'unique' => true,
+                    'primary' => false,
+                    'type' => 'BTREE',
+                ],
+                'name_value' => [
+                    'columns' => [
+                        'name',
+                        'value',
+                    ],
+                    'unique' => false,
+                    'primary' => false,
+                    'type' => 'BTREE',
+                ],
+            ],
+            $this->schema
+                ->describe('test')
+                ->indexes()
+        );
+    }
+
+    public function testIndexInvalid(): void
+    {
+        $this->assertNull(
+            $this->schema
+                ->describe('test')
+                ->index('invalid')
+        );
+    }
+
+    public function testPrimaryKey(): void
+    {
+        $this->assertSame(
+            [
+                'id',
+            ],
+            $this->schema
+                ->describe('test')
+                ->primaryKey()
+        );
+    }
+}

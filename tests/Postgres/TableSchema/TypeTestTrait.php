@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\TableSchema;
+namespace Tests\Postgres\TableSchema;
 
 use Fyre\DB\Types\BooleanType;
 use Fyre\DB\Types\DateTimeType;

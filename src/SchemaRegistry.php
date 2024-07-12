@@ -5,9 +5,13 @@ namespace Fyre\Schema;
 
 use Fyre\Cache\Cacher;
 use Fyre\DB\Connection;
-use Fyre\DB\Handlers\MySQL\MySQLConnection;
+use Fyre\DB\Handlers\Mysql\MysqlConnection;
+use Fyre\DB\Handlers\Postgres\PostgresConnection;
+use Fyre\DB\Handlers\Sqlite\SqliteConnection;
 use Fyre\Schema\Exceptions\SchemaException;
-use Fyre\Schema\Handlers\MySQL\MySQLSchema;
+use Fyre\Schema\Handlers\Mysql\MysqlSchema;
+use Fyre\Schema\Handlers\Postgres\PostgresSchema;
+use Fyre\Schema\Handlers\Sqlite\SqliteSchema;
 use WeakMap;
 
 use function array_key_exists;
@@ -22,7 +26,9 @@ abstract class SchemaRegistry
     protected static Cacher|null $cache = null;
 
     protected static array $handlers = [
-        MySQLConnection::class => MySQLSchema::class,
+        MysqlConnection::class => MysqlSchema::class,
+        PostgresConnection::class => PostgresSchema::class,
+        SqliteConnection::class => SqliteSchema::class,
     ];
 
     protected static WeakMap $schemas;

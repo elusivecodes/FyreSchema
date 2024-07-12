@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\Postgres;
 
 use PHPUnit\Framework\TestCase;
 
 final class SchemaTest extends TestCase
 {
-    use ConnectionTrait;
+    use PostgresConnectionTrait;
 
     public function testGetConnection(): void
     {
@@ -43,9 +43,6 @@ final class SchemaTest extends TestCase
     {
         $this->assertSame(
             [
-                'engine' => 'InnoDB',
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
                 'comment' => '',
             ],
             $this->schema->table('test')
@@ -75,15 +72,9 @@ final class SchemaTest extends TestCase
         $this->assertSame(
             [
                 'test' => [
-                    'engine' => 'InnoDB',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
                     'comment' => '',
                 ],
                 'test_values' => [
-                    'engine' => 'InnoDB',
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
                     'comment' => '',
                 ],
             ],

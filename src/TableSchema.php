@@ -19,21 +19,7 @@ use function strtolower;
  */
 abstract class TableSchema
 {
-    protected static array $types = [
-        'bigint' => 'integer',
-        'boolean' => 'boolean',
-        'date' => 'date',
-        'datetime' => 'datetime',
-        'decimal' => 'decimal',
-        'double' => 'decimal',
-        'float' => 'float',
-        'int' => 'integer',
-        'json' => 'json',
-        'smallint' => 'integer',
-        'time' => 'time',
-        'timestamp' => 'datetime',
-        'tinyint' => 'integer',
-    ];
+    protected static array $types = [];
 
     protected array|null $columns = null;
 
@@ -211,6 +197,21 @@ abstract class TableSchema
     }
 
     /**
+     * Determine whether the table has an auto increment column.
+     * @return bool TRUE if the table has an auto increment column, otherwise FALSE.
+     */
+    public function hasAutoIncrement(): bool
+    {
+        foreach ($this->columns() AS $column) {
+            if (array_key_exists('autoIncrement', $column) && $column['autoIncrement']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Determine if the table has a column.
      *
      * @param string $name The column name.
@@ -282,7 +283,13 @@ abstract class TableSchema
      */
     public function primaryKey(): array|null
     {
-        return $this->index('PRIMARY')['columns'] ?? null;
+        foreach ($this->indexes() as $index) {
+            if ($index['primary']) {
+                return $index['columns'];
+            }
+        }
+
+        return null;
     }
 
     /**

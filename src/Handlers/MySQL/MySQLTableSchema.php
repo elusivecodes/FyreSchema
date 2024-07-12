@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Fyre\Schema\Handlers\MySQL;
+namespace Fyre\Schema\Handlers\Mysql;
 
 use Fyre\DB\ValueBinder;
 use Fyre\Schema\TableSchema;
@@ -14,10 +14,26 @@ use function str_ends_with;
 use function substr;
 
 /**
- * MySQLTableSchema
+ * MysqlTableSchema
  */
-class MySQLTableSchema extends TableSchema
+class MysqlTableSchema extends TableSchema
 {
+    protected static array $types = [
+        'bigint' => 'integer',
+        'boolean' => 'boolean',
+        'date' => 'date',
+        'datetime' => 'datetime',
+        'decimal' => 'decimal',
+        'double' => 'float',
+        'float' => 'float',
+        'int' => 'integer',
+        'json' => 'json',
+        'smallint' => 'integer',
+        'time' => 'time',
+        'timestamp' => 'datetime',
+        'tinyint' => 'integer',
+    ];
+
     /**
      * Read the table columns data.
      *
@@ -27,26 +43,26 @@ class MySQLTableSchema extends TableSchema
     {
         $results = $this->schema->getConnection()
             ->select([
-                'COLUMN_NAME',
-                'DATA_TYPE',
-                'CHARACTER_MAXIMUM_LENGTH',
-                'NUMERIC_PRECISION',
-                'NUMERIC_SCALE',
-                'IS_NULLABLE',
-                'COLUMN_TYPE',
-                'COLUMN_DEFAULT',
-                'CHARACTER_SET_NAME',
-                'COLLATION_NAME',
-                'EXTRA',
-                'COLUMN_COMMENT',
+                'name' => 'Columns.COLUMN_NAME',
+                'type' => 'Columns.DATA_TYPE',
+                'char_length' => 'Columns.CHARACTER_MAXIMUM_LENGTH',
+                'nullable' => 'Columns.IS_NULLABLE',
+                'col_type' => 'Columns.COLUMN_TYPE',
+                'col_default' => 'Columns.COLUMN_DEFAULT',
+                'charset' => 'Columns.CHARACTER_SET_NAME',
+                'collation' => 'Columns.COLLATION_NAME',
+                'extra' => 'Columns.EXTRA',
+                'comment' => 'Columns.COLUMN_COMMENT',
             ])
-            ->from('INFORMATION_SCHEMA.COLUMNS')
+            ->from([
+                'Columns' => 'INFORMATION_SCHEMA.COLUMNS',
+            ])
             ->where([
-                'TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'TABLE_NAME' => $this->tableName,
+                'Columns.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
+                'Columns.TABLE_NAME' => $this->tableName,
             ])
             ->orderBy([
-                'ORDINAL_POSITION' => 'ASC',
+                'Columns.ORDINAL_POSITION' => 'ASC',
             ])
             ->execute()
             ->all();
@@ -54,38 +70,38 @@ class MySQLTableSchema extends TableSchema
         $columns = [];
 
         foreach ($results as $result) {
-            $columnName = $result['COLUMN_NAME'];
+            $columnName = $result['name'];
 
             $values = null;
             $length = null;
             $precision = null;
-            if (preg_match('/^(?:decimal|numeric)\(([0-9]+),([0-9]+)\)/', $result['COLUMN_TYPE'], $match)) {
+            if (preg_match('/^(?:decimal|numeric)\(([0-9]+),([0-9]+)\)/', $result['col_type'], $match)) {
                 $length = (int) $match[1];
                 $precision = (int) $match[2];
-            } else if (preg_match('/^(?:tinyint|smallint|mediumint|int|bigint)\(([0-9]+)\)/', $result['COLUMN_TYPE'], $match)) {
+            } else if (preg_match('/^(?:tinyint|smallint|mediumint|int|bigint)\(([0-9]+)\)/', $result['col_type'], $match)) {
                 $length = (int) $match[1];
                 $precision = 0;
-            } else if (preg_match('/^(?:enum|set)\((.*)\)$/', $result['COLUMN_TYPE'], $match)) {
+            } else if (preg_match('/^(?:enum|set)\((.*)\)$/', $result['col_type'], $match)) {
                 $values = array_map(
                     fn(string $value): string => substr($value, 1, -1),
                     explode(',', $match[1])
                 );
-            } else if (!in_array($result['DATA_TYPE'], ['float', 'double', 'real'])) {
-                $length = $result['CHARACTER_MAXIMUM_LENGTH'];
+            } else if (!in_array($result['type'], ['float', 'double', 'real'])) {
+                $length = $result['char_length'];
             }
 
             $columns[$columnName] = [
-                'type' => $result['DATA_TYPE'],
+                'type' => $result['type'],
                 'length' => $length,
                 'precision' => $precision,
                 'values' => $values,
-                'nullable' => $result['IS_NULLABLE'] === 'YES',
-                'unsigned' => str_ends_with($result['COLUMN_TYPE'], 'unsigned'),
-                'default' => $result['COLUMN_DEFAULT'],
-                'charset' => $result['CHARACTER_SET_NAME'],
-                'collation' => $result['COLLATION_NAME'],
-                'extra' => $result['EXTRA'],
-                'comment' => $result['COLUMN_COMMENT'],
+                'nullable' => $result['nullable'] === 'YES',
+                'unsigned' => str_ends_with($result['col_type'], 'unsigned'),
+                'default' => $result['col_default'],
+                'charset' => $result['charset'],
+                'collation' => $result['collation'],
+                'comment' => $result['comment'],
+                'autoIncrement' => $result['extra'] === 'auto_increment',
             ];
         }
 
@@ -101,33 +117,34 @@ class MySQLTableSchema extends TableSchema
     {
         $results = $this->schema->getConnection()
             ->select([
-                'KEY_COLUMN_USAGE.CONSTRAINT_NAME',
-                'KEY_COLUMN_USAGE.COLUMN_NAME',
-                'KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME',
-                'KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME',
-                'REFERENTIAL_CONSTRAINTS.UPDATE_RULE',
-                'REFERENTIAL_CONSTRAINTS.DELETE_RULE',
+                'name' => 'KeyColumns.CONSTRAINT_NAME',
+                'column_name' => 'KeyColumns.COLUMN_NAME',
+                'ref_table_name' => 'KeyColumns.REFERENCED_TABLE_NAME',
+                'ref_column' => 'KeyColumns.REFERENCED_COLUMN_NAME',
+                'on_update' => 'ReferentialConstraints.UPDATE_RULE',
+                'on_delete' => 'ReferentialConstraints.DELETE_RULE',
             ])
             ->from([
-                'INFORMATION_SCHEMA.KEY_COLUMN_USAGE',
+                'KeyColumns' => 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE',
             ])
             ->join([
                 [
                     'table' => 'INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS',
+                    'alias' => 'ReferentialConstraints',
                     'type' => 'INNER',
                     'conditions' => [
-                        'REFERENTIAL_CONSTRAINTS.CONSTRAINT_SCHEMA = KEY_COLUMN_USAGE.CONSTRAINT_SCHEMA',
-                        'REFERENTIAL_CONSTRAINTS.CONSTRAINT_NAME = KEY_COLUMN_USAGE.CONSTRAINT_NAME',
-                        'REFERENTIAL_CONSTRAINTS.TABLE_NAME = KEY_COLUMN_USAGE.TABLE_NAME',
+                        'ReferentialConstraints.CONSTRAINT_SCHEMA = KeyColumns.CONSTRAINT_SCHEMA',
+                        'ReferentialConstraints.CONSTRAINT_NAME = KeyColumns.CONSTRAINT_NAME',
+                        'ReferentialConstraints.TABLE_NAME = KeyColumns.TABLE_NAME',
                     ],
                 ],
             ])
             ->where([
-                'KEY_COLUMN_USAGE.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'KEY_COLUMN_USAGE.TABLE_NAME' => $this->tableName,
+                'KeyColumns.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
+                'KeyColumns.TABLE_NAME' => $this->tableName,
             ])
             ->orderBy([
-                'KEY_COLUMN_USAGE.ORDINAL_POSITION' => 'ASC',
+                'KeyColumns.ORDINAL_POSITION' => 'ASC',
             ])
             ->execute()
             ->all();
@@ -135,18 +152,18 @@ class MySQLTableSchema extends TableSchema
         $foreignKeys = [];
 
         foreach ($results as $result) {
-            $constraintName = $result['CONSTRAINT_NAME'];
+            $constraintName = $result['name'];
 
             $foreignKeys[$constraintName] ??= [
                 'columns' => [],
-                'referencedTable' => $result['REFERENCED_TABLE_NAME'],
+                'referencedTable' => $result['ref_table_name'],
                 'referencedColumns' => [],
-                'update' => $result['UPDATE_RULE'],
-                'delete' => $result['DELETE_RULE'],
+                'update' => $result['on_update'],
+                'delete' => $result['on_delete'],
             ];
 
-            $foreignKeys[$constraintName]['columns'][] = $result['COLUMN_NAME'];
-            $foreignKeys[$constraintName]['referencedColumns'][] = $result['REFERENCED_COLUMN_NAME'];
+            $foreignKeys[$constraintName]['columns'][] = $result['column_name'];
+            $foreignKeys[$constraintName]['referencedColumns'][] = $result['ref_column'];
         }
 
         return $foreignKeys;
@@ -164,27 +181,27 @@ class MySQLTableSchema extends TableSchema
 
         $results = $this->schema->getConnection()
             ->select([
-                'INDEX_NAME',
-                'COLUMN_NAME',
-                'NON_UNIQUE',
-                'INDEX_TYPE',
+                'name' => 'Statistics.INDEX_NAME',
+                'column_name' => 'Statistics.COLUMN_NAME',
+                'not_unique' => 'Statistics.NON_UNIQUE',
+                'type' => 'Statistics.INDEX_TYPE',
             ])
             ->from([
-                'INFORMATION_SCHEMA.STATISTICS',
+                'Statistics' => 'INFORMATION_SCHEMA.STATISTICS',
             ])
             ->where([
-                'TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'TABLE_NAME' => $this->tableName,
-            ])
-            ->orderBy([
-                '(INDEX_NAME = '.$p0.') DESC',
-                'NON_UNIQUE' => 'ASC',
-                'INDEX_NAME' => 'ASC',
-                'SEQ_IN_INDEX' => 'ASC',
+                'Statistics.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
+                'Statistics.TABLE_NAME' => $this->tableName,
             ])
             ->groupBy([
-                'INDEX_NAME',
-                'COLUMN_NAME',
+                'Statistics.INDEX_NAME',
+                'Statistics.COLUMN_NAME',
+            ])
+            ->orderBy([
+                '(Statistics.INDEX_NAME = '.$p0.') DESC',
+                'Statistics.NON_UNIQUE' => 'ASC',
+                'Statistics.INDEX_NAME' => 'ASC',
+                'Statistics.SEQ_IN_INDEX' => 'ASC',
             ])
             ->execute($binder)
             ->all();
@@ -192,15 +209,16 @@ class MySQLTableSchema extends TableSchema
         $indexes = [];
 
         foreach ($results as $result) {
-            $indexName = $result['INDEX_NAME'];
+            $indexName = $result['name'];
 
             $indexes[$indexName] ??= [
                 'columns' => [],
-                'unique' => !$result['NON_UNIQUE'],
-                'type' => $result['INDEX_TYPE'],
+                'unique' => !$result['not_unique'],
+                'primary' => $indexName === 'PRIMARY',
+                'type' => $result['type'],
             ];
 
-            $indexes[$indexName]['columns'][] = $result['COLUMN_NAME'];
+            $indexes[$indexName]['columns'][] = $result['column_name'];
         }
 
         return $indexes;

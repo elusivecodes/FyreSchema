@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\TableSchema;
+namespace Tests\Mysql\TableSchema;
 
 use PHPUnit\Framework\TestCase;
-use Tests\ConnectionTrait;
+use Tests\Mysql\MysqlConnectionTrait;
 
 final class TableSchemaTest extends TestCase
 {
     use ColumnTestTrait;
-    use ConnectionTrait;
     use DefaultValueTestTrait;
     use ForeignKeyTestTrait;
     use IndexTestTrait;
+    use MysqlConnectionTrait;
     use TypeTestTrait;
 
     public function testGetSchema(): void

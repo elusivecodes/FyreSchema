@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\TableSchema;
+namespace Tests\Sqlite\TableSchema;
 
 trait IndexTestTrait
 {
@@ -31,7 +31,7 @@ trait IndexTestTrait
                     'name',
                 ],
                 'unique' => true,
-                'type' => 'BTREE',
+                'primary' => false,
             ],
             $this->schema
                 ->describe('test')
@@ -43,19 +43,19 @@ trait IndexTestTrait
     {
         $this->assertSame(
             [
-                'PRIMARY' => [
+                'primary' => [
                     'columns' => [
                         'id',
                     ],
                     'unique' => true,
-                    'type' => 'BTREE',
+                    'primary' => true,
                 ],
                 'name' => [
                     'columns' => [
                         'name',
                     ],
                     'unique' => true,
-                    'type' => 'BTREE',
+                    'primary' => false,
                 ],
                 'name_value' => [
                     'columns' => [
@@ -63,7 +63,7 @@ trait IndexTestTrait
                         'value',
                     ],
                     'unique' => false,
-                    'type' => 'BTREE',
+                    'primary' => false,
                 ],
             ],
             $this->schema

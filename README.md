@@ -233,6 +233,14 @@ Get the [*Type*](https://github.com/elusivecodes/FyreTypeParser) parser for a co
 $parser = $tableSchema->getType($name);
 ```
 
+**Has Auto Increment**
+
+Determine if the table has an auto increment column.
+
+```php
+$hasAutoIncrement = $tableSchema->hasAutoIncrement();
+```
+
 **Has Column**
 
 Determine if the table has a column.
