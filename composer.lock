@@ -589,16 +589,16 @@
         },
         {
             "name": "fyre/db",
-            "version": "v4.0.4",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elusivecodes/FyreDB.git",
-                "reference": "71360fb39487d2ef0f6a7d106c9dda7023da28c4"
+                "reference": "eaf5a56ae967c9f3280ddfeecfc751af57bb1bed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/71360fb39487d2ef0f6a7d106c9dda7023da28c4",
-                "reference": "71360fb39487d2ef0f6a7d106c9dda7023da28c4",
+                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/eaf5a56ae967c9f3280ddfeecfc751af57bb1bed",
+                "reference": "eaf5a56ae967c9f3280ddfeecfc751af57bb1bed",
                 "shasum": ""
             },
             "require": {
@@ -629,9 +629,9 @@
             "description": "A database library.",
             "support": {
                 "issues": "https://github.com/elusivecodes/FyreDB/issues",
-                "source": "https://github.com/elusivecodes/FyreDB/tree/v4.0.4"
+                "source": "https://github.com/elusivecodes/FyreDB/tree/v4.1.0"
             },
-            "time": "2024-07-13T07:03:12+00:00"
+            "time": "2024-07-20T11:09:49+00:00"
         },
         {
             "name": "fyre/filesystem",
@@ -3396,16 +3396,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.27",
+            "version": "10.5.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2425f713b2a5350568ccb1a2d3984841a23e83c5"
+                "reference": "ff7fb85cdf88131b83e721fb2a327b664dbed275"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2425f713b2a5350568ccb1a2d3984841a23e83c5",
-                "reference": "2425f713b2a5350568ccb1a2d3984841a23e83c5",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ff7fb85cdf88131b83e721fb2a327b664dbed275",
+                "reference": "ff7fb85cdf88131b83e721fb2a327b664dbed275",
                 "shasum": ""
             },
             "require": {
@@ -3477,7 +3477,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.27"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.28"
             },
             "funding": [
                 {
@@ -3493,7 +3493,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-10T11:48:06+00:00"
+            "time": "2024-07-18T14:54:16+00:00"
         },
         {
             "name": "sebastian/cli-parser",

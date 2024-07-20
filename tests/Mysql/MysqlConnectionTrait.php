@@ -68,7 +68,7 @@ trait MysqlConnectionTrait
                 test ENUM('Y','N') NOT NULL DEFAULT 'Y',
                 bool TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
                 created DATETIME NOT NULL DEFAULT current_timestamp(),
-                modified DATETIME NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                modified DATETIME NULL DEFAULT current_timestamp(),
                 PRIMARY KEY (id),
                 UNIQUE INDEX name (name),
                 INDEX name_value (name, value)
