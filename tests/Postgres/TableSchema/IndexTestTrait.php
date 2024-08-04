@@ -32,6 +32,7 @@ trait IndexTestTrait
                 ],
                 'unique' => true,
                 'primary' => false,
+                'type' => 'btree',
             ],
             $this->schema
                 ->describe('test')
@@ -49,6 +50,7 @@ trait IndexTestTrait
                     ],
                     'unique' => true,
                     'primary' => true,
+                    'type' => 'btree',
                 ],
                 'name' => [
                     'columns' => [
@@ -56,6 +58,7 @@ trait IndexTestTrait
                     ],
                     'unique' => true,
                     'primary' => false,
+                    'type' => 'btree',
                 ],
                 'name_value' => [
                     'columns' => [
@@ -64,6 +67,7 @@ trait IndexTestTrait
                     ],
                     'unique' => false,
                     'primary' => false,
+                    'type' => 'btree',
                 ],
             ],
             $this->schema

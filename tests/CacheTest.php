@@ -113,6 +113,19 @@ final class CacheTest extends TestCase
                     'comment' => '',
                     'autoIncrement' => false,
                 ],
+                'date_precision' => [
+                    'type' => 'datetime',
+                    'length' => null,
+                    'precision' => 6,
+                    'values' => null,
+                    'nullable' => true,
+                    'unsigned' => false,
+                    'default' => 'NULL',
+                    'charset' => null,
+                    'collation' => null,
+                    'comment' => '',
+                    'autoIncrement' => false,
+                ],
                 'created' => [
                     'type' => 'datetime',
                     'length' => null,
@@ -182,7 +195,7 @@ final class CacheTest extends TestCase
                     ],
                     'unique' => true,
                     'primary' => true,
-                    'type' => 'BTREE',
+                    'type' => 'btree',
                 ],
                 'name' => [
                     'columns' => [
@@ -190,7 +203,7 @@ final class CacheTest extends TestCase
                     ],
                     'unique' => true,
                     'primary' => false,
-                    'type' => 'BTREE',
+                    'type' => 'btree',
                 ],
                 'name_value' => [
                     'columns' => [
@@ -199,7 +212,7 @@ final class CacheTest extends TestCase
                     ],
                     'unique' => false,
                     'primary' => false,
-                    'type' => 'BTREE',
+                    'type' => 'btree',
                 ],
             ],
             Cache::use('schema')->get('default.test.test.indexes')

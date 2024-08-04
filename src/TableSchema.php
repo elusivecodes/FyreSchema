@@ -198,11 +198,12 @@ abstract class TableSchema
 
     /**
      * Determine whether the table has an auto increment column.
+     *
      * @return bool TRUE if the table has an auto increment column, otherwise FALSE.
      */
     public function hasAutoIncrement(): bool
     {
-        foreach ($this->columns() AS $column) {
+        foreach ($this->columns() as $column) {
             if (array_key_exists('autoIncrement', $column) && $column['autoIncrement']) {
                 return true;
             }

@@ -11,6 +11,7 @@ use function explode;
 use function in_array;
 use function preg_match;
 use function str_ends_with;
+use function strtolower;
 use function substr;
 
 /**
@@ -81,6 +82,8 @@ class MysqlTableSchema extends TableSchema
             } else if (preg_match('/^(?:tinyint|smallint|mediumint|int|bigint)\(([0-9]+)\)/', $result['col_type'], $match)) {
                 $length = (int) $match[1];
                 $precision = 0;
+            } else if (preg_match('/^(?:datetime|time|timestamp)\(([0-9]+)\)/', $result['col_type'], $match)) {
+                $precision = (int) $match[1];
             } else if (preg_match('/^(?:enum|set)\((.*)\)$/', $result['col_type'], $match)) {
                 $values = array_map(
                     fn(string $value): string => substr($value, 1, -1),
@@ -215,7 +218,7 @@ class MysqlTableSchema extends TableSchema
                 'columns' => [],
                 'unique' => !$result['not_unique'],
                 'primary' => $indexName === 'PRIMARY',
-                'type' => $result['type'],
+                'type' => strtolower($result['type']),
             ];
 
             $indexes[$indexName]['columns'][] = $result['column_name'];

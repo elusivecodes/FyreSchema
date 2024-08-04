@@ -15,13 +15,6 @@ use function preg_replace;
  */
 class PostgresTableSchema extends TableSchema
 {
-    protected static array $typeMap = [
-        'character varying' => 'varchar',
-        'time without time zone' => 'time',
-        'timestamp with time zone' => 'timestamptz',
-        'timestamp without time zone' => 'timestamp',
-    ];
-
     protected static array $types = [
         'bigint' => 'integer',
         'boolean' => 'boolean',
@@ -33,9 +26,9 @@ class PostgresTableSchema extends TableSchema
         'numeric' => 'decimal',
         'real' => 'float',
         'smallint' => 'integer',
-        'time' => 'time',
-        'timestamp' => 'datetime-fractional',
-        'timestamptz' => 'datetime-timezone',
+        'time without time zone' => 'time',
+        'timestamp without time zone' => 'datetime-fractional',
+        'timestamp with time zone' => 'datetime-timezone',
     ];
 
     /**
@@ -116,27 +109,31 @@ class PostgresTableSchema extends TableSchema
 
             $type = $result['type'];
 
-            if (array_key_exists($type, static::$typeMap)) {
-                $type = static::$typeMap[$type];
-            }
-
             $length = null;
             $precision = null;
             switch ($type) {
                 case 'date':
-                case 'time':
-                case 'timestamp':
-                case 'timestamptz':
+                case 'time without time zone':
+                case 'timestamp without time zone':
+                case 'timestamp with time zone':
                     $precision = $result['datetime_precision'];
                     break;
                 case 'bigint':
                 case 'bigserial':
-                case 'double precision':
+                    $length = 20;
+                    $precision = 0;
+                    break;
                 case 'integer':
-                case 'numeric':
                 case 'serial':
+                    $length = 11;
+                    $precision = 0;
+                    break;
                 case 'smallint':
-                case 'real':
+                case 'smallserial':
+                    $length = 6;
+                    $precision = 0;
+                    break;
+                case 'numeric':
                     $length = $result['precision'];
                     $precision = $result['scale'];
                     break;
@@ -185,7 +182,7 @@ class PostgresTableSchema extends TableSchema
                 'on_delete' => 'Constraints.confdeltype',
             ])
             ->from([
-                'Namespaces' => 'pg_catalog.pg_namespace',
+                'Constraints' => 'pg_catalog.pg_constraint',
             ])
             ->join([
                 [
@@ -193,17 +190,17 @@ class PostgresTableSchema extends TableSchema
                     'alias' => 'Classes',
                     'type' => 'INNER',
                     'conditions' => [
-                        'Classes.relnamespace = Namespaces.oid',
+                        'Classes.oid = Constraints.conrelid',
                         'Classes.relname' => $this->tableName,
                     ],
                 ],
                 [
-                    'table' => 'pg_catalog.pg_constraint',
-                    'alias' => 'Constraints',
+                    'table' => 'pg_catalog.pg_namespace',
+                    'alias' => 'Namespaces',
                     'type' => 'INNER',
                     'conditions' => [
-                        'Constraints.connamespace = Namespaces.oid',
-                        'Constraints.conrelid = Classes.oid',
+                        'Namespaces.oid = Classes.relnamespace',
+                        'Namespaces.nspname' => $this->schema->getConnection()->getSchema(),
                     ],
                 ],
                 [
@@ -224,9 +221,6 @@ class PostgresTableSchema extends TableSchema
                         'Attributes2.attnum = ANY(Constraints.confkey)',
                     ],
                 ],
-            ])
-            ->where([
-                'Namespaces.nspname' => $this->schema->getConnection()->getSchema(),
             ])
             ->orderBy([
                 'Constraints.conname' => 'ASC',
@@ -281,9 +275,10 @@ class PostgresTableSchema extends TableSchema
                 'column_name' => 'Attributes.attname',
                 'is_unique' => 'Indexes.indisunique',
                 'is_primary' => 'Indexes.indisprimary',
+                'type' => 'AccessMethods.amname',
             ])
             ->from([
-                'Namespaces' => 'pg_catalog.pg_namespace',
+                'Indexes' => 'pg_catalog.pg_index',
             ])
             ->join([
                 [
@@ -291,16 +286,17 @@ class PostgresTableSchema extends TableSchema
                     'alias' => 'Classes',
                     'type' => 'INNER',
                     'conditions' => [
-                        'Classes.relnamespace = Namespaces.oid',
+                        'Classes.oid = Indexes.indrelid',
                         'Classes.relname' => $this->tableName,
                     ],
                 ],
                 [
-                    'table' => 'pg_catalog.pg_index',
-                    'alias' => 'Indexes',
+                    'table' => 'pg_catalog.pg_namespace',
+                    'alias' => 'Namespaces',
                     'type' => 'INNER',
                     'conditions' => [
-                        'Indexes.indrelid = Classes.oid',
+                        'Namespaces.oid = Classes.relnamespace',
+                        'Namespaces.nspname' => $this->schema->getConnection()->getSchema(),
                     ],
                 ],
                 [
@@ -321,9 +317,14 @@ class PostgresTableSchema extends TableSchema
                         'Attributes.attnum = ANY(Indexes.indkey)',
                     ],
                 ],
-            ])
-            ->where([
-                'Namespaces.nspname' => $this->schema->getConnection()->getSchema(),
+                [
+                    'table' => 'pg_catalog.pg_am',
+                    'alias' => 'AccessMethods',
+                    'type' => 'INNER',
+                    'conditions' => [
+                        'AccessMethods.oid = Classes2.relam',
+                    ],
+                ],
             ])
             ->orderBy([
                 'Indexes.indisprimary' => 'DESC',
@@ -343,6 +344,7 @@ class PostgresTableSchema extends TableSchema
                 'columns' => [],
                 'unique' => (bool) $result['is_unique'],
                 'primary' => (bool) $result['is_primary'],
+                'type' => $result['type'],
             ];
 
             $indexes[$indexName]['columns'][] = $result['column_name'];

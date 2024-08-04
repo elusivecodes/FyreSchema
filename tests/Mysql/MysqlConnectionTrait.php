@@ -67,8 +67,9 @@ trait MysqlConnectionTrait
                 text VARCHAR(255) NOT NULL DEFAULT 'default' COLLATE 'utf8mb4_unicode_ci',
                 test ENUM('Y','N') NOT NULL DEFAULT 'Y',
                 bool TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-                created DATETIME NOT NULL DEFAULT current_timestamp(),
-                modified DATETIME NULL DEFAULT current_timestamp(),
+                date_precision DATETIME(6) NULL DEFAULT NULL,
+                created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                modified DATETIME NULL DEFAULT CURRENT_TIMESTAMP(),
                 PRIMARY KEY (id),
                 UNIQUE INDEX name (name),
                 INDEX name_value (name, value)

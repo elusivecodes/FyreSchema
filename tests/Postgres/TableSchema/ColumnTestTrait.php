@@ -9,7 +9,7 @@ trait ColumnTestTrait
     {
         $this->assertSame(
             [
-                'type' => 'varchar',
+                'type' => 'character varying',
                 'length' => 255,
                 'precision' => null,
                 'nullable' => true,
@@ -42,6 +42,7 @@ trait ColumnTestTrait
                 'price',
                 'text',
                 'bool',
+                'date_precision',
                 'created',
                 'modified',
             ],
@@ -55,7 +56,7 @@ trait ColumnTestTrait
             [
                 'id' => [
                     'type' => 'integer',
-                    'length' => 32,
+                    'length' => 11,
                     'precision' => 0,
                     'nullable' => false,
                     'default' => null,
@@ -63,7 +64,7 @@ trait ColumnTestTrait
                     'autoIncrement' => true,
                 ],
                 'name' => [
-                    'type' => 'varchar',
+                    'type' => 'character varying',
                     'length' => 255,
                     'precision' => null,
                     'nullable' => true,
@@ -72,9 +73,9 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'value' => [
-                    'type' => 'integer',
-                    'length' => 32,
-                    'precision' => 0,
+                    'type' => 'double precision',
+                    'length' => null,
+                    'precision' => null,
                     'nullable' => false,
                     'default' => '5',
                     'comment' => '',
@@ -90,7 +91,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'text' => [
-                    'type' => 'varchar',
+                    'type' => 'character varying',
                     'length' => 255,
                     'precision' => null,
                     'nullable' => false,
@@ -107,21 +108,30 @@ trait ColumnTestTrait
                     'comment' => '',
                     'autoIncrement' => false,
                 ],
+                'date_precision' => [
+                    'type' => 'timestamp without time zone',
+                    'length' => null,
+                    'precision' => 0,
+                    'nullable' => true,
+                    'default' => 'NULL',
+                    'comment' => '',
+                    'autoIncrement' => false,
+                ],
                 'created' => [
-                    'type' => 'timestamp',
+                    'type' => 'timestamp without time zone',
                     'length' => null,
                     'precision' => 6,
                     'nullable' => false,
-                    'default' => 'LOCALTIMESTAMP(0)',
+                    'default' => 'CURRENT_TIMESTAMP',
                     'comment' => '',
                     'autoIncrement' => false,
                 ],
                 'modified' => [
-                    'type' => 'timestamp',
+                    'type' => 'timestamp without time zone',
                     'length' => null,
                     'precision' => 6,
                     'nullable' => true,
-                    'default' => 'LOCALTIMESTAMP(0)',
+                    'default' => 'CURRENT_TIMESTAMP',
                     'comment' => '',
                     'autoIncrement' => false,
                 ],
