@@ -79,7 +79,7 @@ class MysqlTableSchema extends TableSchema
             if (preg_match('/^(?:decimal|numeric)\(([0-9]+),([0-9]+)\)/', $result['col_type'], $match)) {
                 $length = (int) $match[1];
                 $precision = (int) $match[2];
-            } else if (preg_match('/^(?:tinyint|smallint|mediumint|int|bigint)\(([0-9]+)\)/', $result['col_type'], $match)) {
+            } else if (preg_match('/^(?:tinyint|smallint|mediumint|int|bigint|bit)\(([0-9]+)\)/', $result['col_type'], $match)) {
                 $length = (int) $match[1];
                 $precision = 0;
             } else if (preg_match('/^(?:datetime|time|timestamp)\(([0-9]+)\)/', $result['col_type'], $match)) {
