@@ -71,7 +71,6 @@ class SqliteTableSchema extends TableSchema
             $columnName = $result['name'];
 
             $length = null;
-            $nullable = !$result['not_null'];
             $precision = null;
             $unsigned = false;
             if (preg_match('/^(unsigned)?\s*(decimal|numeric)(?:\(([0-9]+),([0-9]+)\))?/i', $result['type'], $match)) {
@@ -102,6 +101,8 @@ class SqliteTableSchema extends TableSchema
                 $type = strtolower($result['type']);
             }
 
+            $nullable = !$result['not_null'];
+
             if ($result['pk'] && $primaryKeys === []) {
                 $nullable = false;
             }
@@ -110,13 +111,19 @@ class SqliteTableSchema extends TableSchema
                 $primaryKeys[] = $columnName;
             }
 
+            $default = $result['col_default'];
+
+            if ($nullable) {
+                $default ??= 'NULL';
+            }
+
             $columns[$columnName] = [
                 'type' => $type,
                 'length' => $length,
                 'precision' => $precision,
                 'nullable' => $nullable,
                 'unsigned' => $unsigned,
-                'default' => $result['col_default'],
+                'default' => $default,
                 'autoIncrement' => false,
             ];
         }

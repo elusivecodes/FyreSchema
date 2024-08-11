@@ -93,14 +93,21 @@ class MysqlTableSchema extends TableSchema
                 $length = $result['char_length'];
             }
 
+            $nullable = $result['nullable'] === 'YES';
+            $default = $result['col_default'];
+
+            if ($nullable) {
+                $default ??= 'NULL';
+            }
+
             $columns[$columnName] = [
                 'type' => $result['type'],
                 'length' => $length,
                 'precision' => $precision,
                 'values' => $values,
-                'nullable' => $result['nullable'] === 'YES',
+                'nullable' => $nullable,
                 'unsigned' => str_ends_with($result['col_type'], 'unsigned'),
-                'default' => $result['col_default'],
+                'default' => $default,
                 'charset' => $result['charset'],
                 'collation' => $result['collation'],
                 'comment' => $result['comment'],

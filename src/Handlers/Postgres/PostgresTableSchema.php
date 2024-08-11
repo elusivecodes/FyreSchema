@@ -142,6 +142,8 @@ class PostgresTableSchema extends TableSchema
                     break;
             }
 
+            $nullable = $result['nullable'] === 'YES';
+
             $default = null;
             if ($result['col_default'] === null || is_numeric($result['col_default'])) {
                 $default = $result['col_default'];
@@ -151,11 +153,15 @@ class PostgresTableSchema extends TableSchema
                 $default = preg_replace('/^(\'.*\')(?:::.*)$/', '$1', $result['col_default']);
             }
 
+            if ($nullable) {
+                $default ??= 'NULL';
+            }
+
             $columns[$columnName] = [
                 'type' => $type,
                 'length' => $length,
                 'precision' => $precision,
-                'nullable' => $result['nullable'] === 'YES',
+                'nullable' => $nullable,
                 'default' => $default,
                 'comment' => $result['comment'] ?? '',
                 'autoIncrement' => (bool) $result['auto_increment'],
