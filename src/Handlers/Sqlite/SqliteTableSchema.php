@@ -19,7 +19,10 @@ class SqliteTableSchema extends TableSchema
 {
     protected static array $types = [
         'bigint' => 'integer',
+        'binary' => 'binary',
+        'blob' => 'binary',
         'boolean' => 'boolean',
+        'clob' => 'binary',
         'date' => 'date',
         'datetime' => 'datetime',
         'datetimefractional' => 'datetime-fractional',
@@ -32,11 +35,13 @@ class SqliteTableSchema extends TableSchema
         'numeric' => 'decimal',
         'real' => 'float',
         'smallint' => 'integer',
+        'text' => 'text',
         'time' => 'time',
         'timestamp' => 'datetime',
         'timestampfractional' => 'datetime-fractional',
         'timestamptimezone' => 'datetime-timezone',
         'tinyint' => 'integer',
+        'varbinary' => 'binary',
     ];
 
     /**

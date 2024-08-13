@@ -21,18 +21,31 @@ class MysqlTableSchema extends TableSchema
 {
     protected static array $types = [
         'bigint' => 'integer',
+        'binary' => 'binary',
+        'blob' => 'binary',
         'boolean' => 'boolean',
         'date' => 'date',
         'datetime' => 'datetime',
         'decimal' => 'decimal',
         'double' => 'float',
+        'enum' => 'enum',
         'float' => 'float',
         'int' => 'integer',
         'json' => 'json',
+        'longblob' => 'binary',
+        'longtext' => 'text',
+        'mediumblob' => 'binary',
+        'mediumint' => 'integer',
+        'mediumtext' => 'text',
+        'set' => 'set',
         'smallint' => 'integer',
+        'text' => 'text',
         'time' => 'time',
         'timestamp' => 'datetime',
+        'tinyblob' => 'binary',
         'tinyint' => 'integer',
+        'tinytext' => 'text',
+        'varbinary' => 'binary',
     ];
 
     /**
