@@ -15,6 +15,8 @@ use Fyre\Schema\Handlers\Sqlite\SqliteSchema;
 use WeakMap;
 
 use function array_key_exists;
+use function array_shift;
+use function class_parents;
 use function get_class;
 use function ltrim;
 
@@ -90,12 +92,18 @@ abstract class SchemaRegistry
     protected static function loadSchema(Connection $connection): Schema
     {
         $connectionClass = get_class($connection);
+        $connectionKey = $connectionClass;
 
-        if (!array_key_exists($connectionClass, static::$handlers)) {
-            throw SchemaException::forMissingHandler($connectionClass);
+        while (!array_key_exists($connectionKey, static::$handlers)) {
+            $classParents ??= class_parents($connection);
+            $connectionKey = array_shift($classParents);
+
+            if (!$connectionKey) {
+                throw SchemaException::forMissingHandler($connectionClass);
+            }
         }
 
-        $schemaClass = static::$handlers[$connectionClass];
+        $schemaClass = static::$handlers[$connectionKey];
 
         return new $schemaClass($connection);
     }
