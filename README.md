@@ -29,7 +29,7 @@ use Fyre\Schema\SchemaRegistry;
 
 ## Basic Usage
 
-- `$cache` is a [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers).
+- `$cache` is a [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers), and will default to *null*.
 
 ```php
 $schemaRegistry = new SchemaRegistry($cache);

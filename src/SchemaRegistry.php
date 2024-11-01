@@ -47,7 +47,7 @@ class SchemaRegistry
     }
 
     /**
-     * Set a Schema handler for a Connection class.
+     * Map a Connection class to a Schema handler.
      *
      * @param string $connectionClass The Connection class.
      * @param string $schemaClass The Schema class.
@@ -60,7 +60,7 @@ class SchemaRegistry
     }
 
     /**
-     * Get the Schema for a Connection.
+     * Load a shared Schema for a Connection.
      *
      * @param Connection $connection The Connection.
      * @return Schema The Schema.
