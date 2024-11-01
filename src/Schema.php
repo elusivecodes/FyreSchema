@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace Fyre\Schema;
 
-use Closure;
+use Fyre\Cache\Cacher;
 use Fyre\DB\Connection;
-use Fyre\DB\ConnectionManager;
 use Fyre\Schema\Exceptions\SchemaException;
 
 use function array_keys;
@@ -16,6 +15,8 @@ use function str_replace;
  */
 abstract class Schema
 {
+    protected Cacher|null $cache;
+
     protected Connection $connection;
 
     protected string $database;
@@ -28,13 +29,12 @@ abstract class Schema
      * New Schema constructor.
      *
      * @param Connection The Connection.
+     * @param Cacher|null The Cacher.
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, Cacher|null $cache = null)
     {
         $this->connection = $connection;
-
-        $config = $this->connection->getConfig();
-        $this->database = $config['database'];
+        $this->cache = $cache;
     }
 
     /**
@@ -46,10 +46,8 @@ abstract class Schema
     {
         $this->tables = null;
 
-        $cache = SchemaRegistry::getCache();
-
-        if ($cache) {
-            $cache->delete($this->getCachePrefix().'.tables');
+        if ($this->cache) {
+            $this->cache->delete($this->getCachePrefix().'.tables');
         }
 
         return $this;
@@ -73,18 +71,27 @@ abstract class Schema
     }
 
     /**
+     * Get the Cacher.
+     *
+     * @return Cacher|null The Cacher.
+     */
+    public function getCache(): Cacher|null
+    {
+        return $this->cache;
+    }
+
+    /**
      * Get the cache prefix.
      *
      * @return string The cache prefix.
      */
     public function getCachePrefix(): string
     {
-        $key = ConnectionManager::getKey($this->connection);
-        $db = str_replace(':', '_', $this->database);
+        $config = $this->connection->getConfig();
 
-        return $key ?
-            $key.'.'.$db :
-            $db;
+        $prefix = $config['cacheKeyPrefix'] ?? $config['database'] ?? '';
+
+        return str_replace(':', '_', $prefix);
     }
 
     /**
@@ -104,7 +111,7 @@ abstract class Schema
      */
     public function getDatabaseName(): string
     {
-        return $this->database;
+        return $this->connection->getConfig()['database'] ?? '';
     }
 
     /**
@@ -156,15 +163,13 @@ abstract class Schema
      */
     protected function loadTables(): array
     {
-        $cache = SchemaRegistry::getCache();
-
-        if (!$cache) {
+        if (!$this->cache) {
             return $this->readTables();
         }
 
-        return $cache->remember(
+        return $this->cache->remember(
             $this->getCachePrefix().'.tables',
-            Closure::fromCallable([$this, 'readTables'])
+            [$this, 'readTables'](...)
         );
     }
 

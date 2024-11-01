@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace Tests\Mysql;
 
-use Fyre\Cache\Cache;
+use Fyre\Cache\CacheManager;
+use Fyre\Cache\Cacher;
 use Fyre\Cache\Handlers\FileCacher;
 use Fyre\DB\Connection;
 use Fyre\DB\ConnectionManager;
 use Fyre\DB\Handlers\Mysql\MysqlConnection;
+use Fyre\DB\TypeParser;
 use Fyre\FileSystem\Folder;
 use Fyre\Schema\Schema;
 use Fyre\Schema\SchemaRegistry;
@@ -16,49 +18,42 @@ use function getenv;
 
 trait MysqlConnectionTrait
 {
+    protected Cacher $cache;
+
     protected Connection $db;
 
     protected Schema $schema;
 
-    public static function setUpBeforeClass(): void
+    protected function setUp(): void
     {
-        ConnectionManager::clear();
-        Cache::clear();
+        $typeParser = new TypeParser();
 
-        ConnectionManager::setConfig([
-            'default' => [
-                'className' => MysqlConnection::class,
-                'host' => getenv('MYSQL_HOST'),
-                'username' => getenv('MYSQL_USERNAME'),
-                'password' => getenv('MYSQL_PASSWORD'),
-                'database' => getenv('MYSQL_NAME'),
-                'port' => getenv('MYSQL_PORT'),
-                'collation' => 'utf8mb4_unicode_ci',
-                'charset' => 'utf8mb4',
-                'compress' => true,
-                'persist' => true,
-            ],
+        $this->db = (new ConnectionManager($typeParser))->build([
+            'className' => MysqlConnection::class,
+            'host' => getenv('MYSQL_HOST'),
+            'username' => getenv('MYSQL_USERNAME'),
+            'password' => getenv('MYSQL_PASSWORD'),
+            'database' => getenv('MYSQL_NAME'),
+            'port' => getenv('MYSQL_PORT'),
+            'collation' => 'utf8mb4_unicode_ci',
+            'charset' => 'utf8mb4',
+            'compress' => true,
+            'persist' => true,
         ]);
 
-        Cache::setConfig([
-            'schema' => [
-                'className' => FileCacher::class,
-                'path' => 'tmp',
-                'prefix' => 'schema.',
-                'expire' => 3600,
-            ],
+        $this->cache = (new CacheManager())->build([
+            'className' => FileCacher::class,
+            'path' => 'tmp',
+            'prefix' => 'schema.',
+            'expire' => 3600,
         ]);
 
-        $cache = Cache::use('schema');
+        $this->schema = (new SchemaRegistry($this->cache))->use($this->db);
 
-        SchemaRegistry::setCache($cache);
+        $this->db->query('DROP TABLE IF EXISTS test_values');
+        $this->db->query('DROP TABLE IF EXISTS test');
 
-        $connection = ConnectionManager::use();
-
-        $connection->query('DROP TABLE IF EXISTS test_values');
-        $connection->query('DROP TABLE IF EXISTS test');
-
-        $connection->query(<<<'EOT'
+        $this->db->query(<<<'EOT'
             CREATE TABLE test (
                 id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 name VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -75,7 +70,7 @@ trait MysqlConnectionTrait
                 INDEX name_value (name, value)
             ) COLLATE='utf8mb4_unicode_ci' ENGINE=InnoDB
         EOT);
-        $connection->query(<<<'EOT'
+        $this->db->query(<<<'EOT'
             CREATE TABLE test_values (
                 id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 test_id INT(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -88,7 +83,7 @@ trait MysqlConnectionTrait
         EOT);
     }
 
-    public static function tearDownAfterClass(): void
+    protected function tearDown(): void
     {
         $folder = new Folder('tmp');
 
@@ -96,14 +91,7 @@ trait MysqlConnectionTrait
             $folder->delete();
         }
 
-        $connection = ConnectionManager::use();
-        $connection->query('DROP TABLE IF EXISTS test_values');
-        $connection->query('DROP TABLE IF EXISTS test');
-    }
-
-    protected function setUp(): void
-    {
-        $this->db = ConnectionManager::use();
-        $this->schema = SchemaRegistry::getSchema($this->db);
+        $this->db->query('DROP TABLE IF EXISTS test_values');
+        $this->db->query('DROP TABLE IF EXISTS test');
     }
 }

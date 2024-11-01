@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Fyre\Schema;
 
 use Closure;
-use Fyre\DB\TypeParser;
 use Fyre\DB\Types\Type;
 
 use function array_key_exists;
@@ -50,7 +49,7 @@ abstract class TableSchema
      */
     public function clear(): static
     {
-        $cache = SchemaRegistry::getCache();
+        $cache = $this->schema->getCache();
 
         if ($cache) {
             $prefix = $this->schema->getCachePrefix();
@@ -193,7 +192,9 @@ abstract class TableSchema
 
         $type = static::getDatabaseType($column);
 
-        return TypeParser::use($type);
+        return $this->schema->getConnection()
+            ->getTypeParser()
+            ->use($type);
     }
 
     /**
@@ -302,7 +303,7 @@ abstract class TableSchema
      */
     protected function load(string $key, Closure $callback): array
     {
-        $cache = SchemaRegistry::getCache();
+        $cache = $this->schema->getCache();
 
         if (!$cache) {
             return $callback();
@@ -323,7 +324,7 @@ abstract class TableSchema
     {
         return $this->load(
             $this->tableName.'.columns',
-            Closure::fromCallable([$this, 'readColumns'])
+            [$this, 'readColumns'](...)
         );
     }
 

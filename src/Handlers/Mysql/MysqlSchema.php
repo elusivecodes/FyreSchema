@@ -38,7 +38,7 @@ class MysqlSchema extends Schema
                 ],
             ])
             ->where([
-                'Tables.TABLE_SCHEMA' => $this->database,
+                'Tables.TABLE_SCHEMA' => $this->getDatabaseName(),
                 'Tables.TABLE_TYPE' => 'BASE TABLE',
             ])
             ->orderBy([

@@ -23,49 +23,27 @@ use function ltrim;
 /**
  * SchemaRegistry
  */
-abstract class SchemaRegistry
+class SchemaRegistry
 {
-    protected static Cacher|null $cache = null;
+    protected Cacher|null $cache = null;
 
-    protected static array $handlers = [
+    protected array $handlers = [
         MysqlConnection::class => MysqlSchema::class,
         PostgresConnection::class => PostgresSchema::class,
         SqliteConnection::class => SqliteSchema::class,
     ];
 
-    protected static WeakMap $schemas;
+    protected WeakMap $schemas;
 
     /**
-     * Get the Cache.
+     * New SchemaRegistry constructor.
      *
-     * @return Cacher|null The Cacher.
+     * @param Cacher|null $cache The cache.
      */
-    public static function getCache(): Cacher|null
+    public function __construct(Cacher|null $cache)
     {
-        return static::$cache;
-    }
-
-    /**
-     * Get the Schema for a Connection.
-     *
-     * @param Connection $connection The Connection.
-     * @return Schema The Schema.
-     */
-    public static function getSchema(Connection $connection): Schema
-    {
-        static::$schemas ??= new WeakMap();
-
-        return static::$schemas[$connection] ??= static::loadSchema($connection);
-    }
-
-    /**
-     * Set the Cache.
-     *
-     * @param Cacher|null $cache The Cacher.
-     */
-    public static function setCache(Cacher|null $cache): void
-    {
-        static::$cache = $cache;
+        $this->cache = $cache;
+        $this->schemas = new WeakMap();
     }
 
     /**
@@ -74,11 +52,22 @@ abstract class SchemaRegistry
      * @param string $connectionClass The Connection class.
      * @param string $schemaClass The Schema class.
      */
-    public static function setHandler(string $connectionClass, string $schemaClass): void
+    public function map(string $connectionClass, string $schemaClass): void
     {
         $connectionClass = ltrim($connectionClass, '\\');
 
-        static::$handlers[$connectionClass] = $schemaClass;
+        $this->handlers[$connectionClass] = $schemaClass;
+    }
+
+    /**
+     * Get the Schema for a Connection.
+     *
+     * @param Connection $connection The Connection.
+     * @return Schema The Schema.
+     */
+    public function use(Connection $connection): Schema
+    {
+        return $this->schemas[$connection] ??= $this->build($connection);
     }
 
     /**
@@ -89,12 +78,12 @@ abstract class SchemaRegistry
      *
      * @throws SchemaException if the handler is missing.
      */
-    protected static function loadSchema(Connection $connection): Schema
+    protected function build(Connection $connection): Schema
     {
         $connectionClass = get_class($connection);
         $connectionKey = $connectionClass;
 
-        while (!array_key_exists($connectionKey, static::$handlers)) {
+        while (!array_key_exists($connectionKey, $this->handlers)) {
             $classParents ??= class_parents($connection);
             $connectionKey = array_shift($classParents);
 
@@ -103,8 +92,8 @@ abstract class SchemaRegistry
             }
         }
 
-        $schemaClass = static::$handlers[$connectionKey];
+        $schemaClass = $this->handlers[$connectionKey];
 
-        return new $schemaClass($connection);
+        return new $schemaClass($connection, $this->cache);
     }
 }

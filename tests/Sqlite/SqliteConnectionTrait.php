@@ -3,52 +3,47 @@ declare(strict_types=1);
 
 namespace Tests\Sqlite;
 
-use Fyre\Cache\Cache;
+use Fyre\Cache\CacheManager;
+use Fyre\Cache\Cacher;
 use Fyre\Cache\Handlers\FileCacher;
 use Fyre\DB\Connection;
 use Fyre\DB\ConnectionManager;
 use Fyre\DB\Handlers\Sqlite\SqliteConnection;
+use Fyre\DB\TypeParser;
 use Fyre\FileSystem\Folder;
 use Fyre\Schema\Schema;
 use Fyre\Schema\SchemaRegistry;
 
 trait SqliteConnectionTrait
 {
+    protected Cacher $cache;
+
     protected Connection $db;
 
     protected Schema $schema;
 
-    public static function setUpBeforeClass(): void
+    protected function setUp(): void
     {
-        ConnectionManager::clear();
-        Cache::clear();
+        $typeParser = new TypeParser();
 
-        ConnectionManager::setConfig([
-            'default' => [
-                'className' => SqliteConnection::class,
-                'persist' => true,
-            ],
+        $this->db = (new ConnectionManager($typeParser))->build([
+            'className' => SqliteConnection::class,
+            'persist' => true,
         ]);
 
-        Cache::setConfig([
-            'schema' => [
-                'className' => FileCacher::class,
-                'path' => 'tmp',
-                'prefix' => 'schema.',
-                'expire' => 3600,
-            ],
+        $this->cache = (new CacheManager())->build([
+            'className' => FileCacher::class,
+            'path' => 'tmp',
+            'prefix' => 'schema.',
+            'expire' => 3600,
         ]);
 
-        $cache = Cache::use('schema');
+        $this->schema = (new SchemaRegistry($this->cache))->use($this->db);
 
-        SchemaRegistry::setCache($cache);
+        $this->db->query('DROP TABLE IF EXISTS test_values');
+        $this->db->query('DROP TABLE IF EXISTS test');
 
-        $connection = ConnectionManager::use();
-
-        $connection->query('DROP TABLE IF EXISTS test_values');
-        $connection->query('DROP TABLE IF EXISTS test');
-
-        $connection->query(<<<'EOT'
+        $this->db->query(<<<'EOT'
             CREATE TABLE test (
                 id UNSIGNED INTEGER NOT NULL,
                 name VARCHAR(255) NULL DEFAULT NULL,
@@ -61,13 +56,13 @@ trait SqliteConnectionTrait
                 PRIMARY KEY (id)
             )
         EOT);
-        $connection->query(<<<'EOT'
+        $this->db->query(<<<'EOT'
             CREATE INDEX name_value ON test (name, value)
         EOT);
-        $connection->query(<<<'EOT'
+        $this->db->query(<<<'EOT'
             CREATE UNIQUE INDEX name ON test (name)
         EOT);
-        $connection->query(<<<'EOT'
+        $this->db->query(<<<'EOT'
             CREATE TABLE test_values (
                 id UNSIGNED INTEGER NOT NULL,
                 test_id UNSIGNED INTEGER NOT NULL DEFAULT '0',
@@ -76,15 +71,15 @@ trait SqliteConnectionTrait
                 FOREIGN KEY (test_id) REFERENCES test (id) ON UPDATE CASCADE ON DELETE CASCADE
             )
         EOT);
-        $connection->query(<<<'EOT'
+        $this->db->query(<<<'EOT'
             CREATE INDEX test_values_test_id ON test_values (test_id)
         EOT);
-        $connection->query(<<<'EOT'
+        $this->db->query(<<<'EOT'
             CREATE INDEX value ON test_values (value)
         EOT);
     }
 
-    public static function tearDownAfterClass(): void
+    protected function tearDown(): void
     {
         $folder = new Folder('tmp');
 
@@ -92,14 +87,7 @@ trait SqliteConnectionTrait
             $folder->delete();
         }
 
-        $connection = ConnectionManager::use();
-        $connection->query('DROP TABLE IF EXISTS test_values');
-        $connection->query('DROP TABLE IF EXISTS test');
-    }
-
-    protected function setUp(): void
-    {
-        $this->db = ConnectionManager::use();
-        $this->schema = SchemaRegistry::getSchema($this->db);
+        $this->db->query('DROP TABLE IF EXISTS test_values');
+        $this->db->query('DROP TABLE IF EXISTS test');
     }
 }

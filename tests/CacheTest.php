@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Fyre\Cache\Cache;
 use PHPUnit\Framework\TestCase;
 use Tests\Mysql\MysqlConnectionTrait;
 
@@ -153,7 +152,7 @@ final class CacheTest extends TestCase
                     'autoIncrement' => false,
                 ],
             ],
-            Cache::use('schema')->get('default.test.test.columns')
+            $this->cache->get('test.test.columns')
         );
     }
 
@@ -177,7 +176,7 @@ final class CacheTest extends TestCase
                     'delete' => 'CASCADE',
                 ],
             ],
-            Cache::use('schema')->get('default.test.test_values.foreign_keys')
+            $this->cache->get('test.test_values.foreign_keys')
         );
     }
 
@@ -215,7 +214,7 @@ final class CacheTest extends TestCase
                     'type' => 'btree',
                 ],
             ],
-            Cache::use('schema')->get('default.test.test.indexes')
+            $this->cache->get('test.test.indexes')
         );
     }
 
@@ -238,7 +237,7 @@ final class CacheTest extends TestCase
                     'comment' => '',
                 ],
             ],
-            Cache::use('schema')->get('default.test.tables')
+            $this->cache->get('test.tables')
         );
     }
 }

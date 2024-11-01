@@ -5,7 +5,8 @@
 
 ## Table Of Contents
 - [Installation](#installation)
-- [Schema Registry](#schema-registry)
+- [Basic Usage](#basic-usage)
+- [Methods](#methods)
 - [Schemas](#schemas)
 - [Table Schemas](#table-schemas)
 
@@ -26,45 +27,36 @@ use Fyre\Schema\SchemaRegistry;
 ```
 
 
-## Schema Registry
-
-**Get Cache**
-
-Get the [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers).
-
-```php
-$cache = SchemaRegistry::getCache();
-```
-
-**Get Schema**
-
-Get the [*Schema*](#schemas) for a [*Connection*](https://github.com/elusivecodes/FyreDB#connections).
-
-- `$connection` is a [*Connection*](https://github.com/elusivecodes/FyreDB#connections).
-
-```php
-$schema = SchemaRegistry::getSchema($connection);
-```
-
-**Set Cache**
-
-Set the [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers).
+## Basic Usage
 
 - `$cache` is a [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers).
 
 ```php
-SchemaRegistry::getCache($cache);
+$schemaRegistry = new SchemaRegistry($cache);
 ```
 
-**Set Handler**
 
-Set a [*Schema*](#schemas) handler for a [*Connection*](https://github.com/elusivecodes/FyreDB#connections) class.
+## Methods
+
+**Map**
+
+Map a [*Connection*](https://github.com/elusivecodes/FyreDB#connections) class to a [*Schema*](#schemas) handler.
 
 - `$connectionClass` is a string representing the [*Connection*](https://github.com/elusivecodes/FyreDB#connections) class name.
 - `$schemaClass` is a string representing the [*Schema*](#schemas) class name.
 
 ```php
-SchemaRegistry::setHandler($connectionClass, $schemaClass);
+$schemaRegistry->map($connectionClass, $schemaClass);
+```
+
+**Use**
+
+Load the shared [*Schema*](#schemas) for a [*Connection*](https://github.com/elusivecodes/FyreDB#connections).
+
+- `$connection` is a [*Connection*](https://github.com/elusivecodes/FyreDB#connections).
+
+```php
+$schema = $schemaRegistry->use($connection);
 ```
 
 
