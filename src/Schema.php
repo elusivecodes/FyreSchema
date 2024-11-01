@@ -115,7 +115,7 @@ abstract class Schema
     }
 
     /**
-     * Determine if the schema has a table.
+     * Determine whether the schema has a table.
      *
      * @param string $name The table name.
      * @return bool TRUE if the schema has the table, otherwise FALSE.

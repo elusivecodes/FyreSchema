@@ -98,7 +98,7 @@ $database = $schema->getDatabaseName();
 
 **Has Table**
 
-Determine if the schema has a table.
+Determine whether the schema has a table.
 
 - `$name` is a string representing the table name.
 
@@ -227,7 +227,7 @@ $parser = $tableSchema->getType($name);
 
 **Has Auto Increment**
 
-Determine if the table has an auto increment column.
+Determine whether the table has an auto increment column.
 
 ```php
 $hasAutoIncrement = $tableSchema->hasAutoIncrement();
@@ -235,7 +235,7 @@ $hasAutoIncrement = $tableSchema->hasAutoIncrement();
 
 **Has Column**
 
-Determine if the table has a column.
+Determine whether the table has a column.
 
 - `$name` is a string representing the column name.
 
@@ -245,7 +245,7 @@ $hasColumn = $tableSchema->hasColumn($name);
 
 **Has Foreign Key**
 
-Determine if the table has a foreign key.
+Determine whether the table has a foreign key.
 
 - `$name` is a string representing the foreign key name.
 
@@ -255,7 +255,7 @@ $hasForeignKey = $tableSchema->hasForeignKey($name);
 
 **Has Index**
 
-Determine if the table has an index.
+Determine whether the table has an index.
 
 - `$name` is a string representing the index name.
 
@@ -283,7 +283,7 @@ $indexes = $tableSchema->indexes();
 
 **Is Nullable**
 
-Determine if a table column is nullable.
+Determine whether a table column is nullable.
 
 - `$name` is a string representing the column name.
 
