@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Fyre\Schema;
 
+use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
+use Fyre\Container\Container;
 use Fyre\DB\Connection;
 use Fyre\Schema\Exceptions\SchemaException;
 
@@ -15,9 +17,13 @@ use function str_replace;
  */
 abstract class Schema
 {
-    protected Cacher|null $cache;
+    protected const CACHE_KEY = 'schema';
+
+    protected CacheManager $cacheManager;
 
     protected Connection $connection;
+
+    protected Container $container;
 
     protected string $database;
 
@@ -28,13 +34,15 @@ abstract class Schema
     /**
      * New Schema constructor.
      *
-     * @param Connection The Connection.
-     * @param Cacher|null The Cacher.
+     * @param Container $container The Container.
+     * @param CacheManager $cacheManager The CacheManager.
+     * @param Connection $connection The Connection.
      */
-    public function __construct(Connection $connection, Cacher|null $cache = null)
+    public function __construct(Container $container, CacheManager $cacheManager, Connection $connection)
     {
+        $this->container = $container;
+        $this->cacheManager = $cacheManager;
         $this->connection = $connection;
-        $this->cache = $cache;
     }
 
     /**
@@ -46,8 +54,10 @@ abstract class Schema
     {
         $this->tables = null;
 
-        if ($this->cache) {
-            $this->cache->delete($this->getCachePrefix().'.tables');
+        $cache = $this->getCache();
+
+        if ($cache) {
+            $cache->delete($this->getCachePrefix().'.tables');
         }
 
         return $this;
@@ -77,7 +87,9 @@ abstract class Schema
      */
     public function getCache(): Cacher|null
     {
-        return $this->cache;
+        return $this->cacheManager->hasConfig(static::CACHE_KEY) ?
+            $this->cacheManager->use(static::CACHE_KEY) :
+            null;
     }
 
     /**
@@ -89,9 +101,10 @@ abstract class Schema
     {
         $config = $this->connection->getConfig();
 
-        $prefix = $config['cacheKeyPrefix'] ?? $config['database'] ?? '';
+        $prefix = $config['cacheKeyPrefix'] ?? '';
+        $prefix = $prefix ? $prefix.'.' : '';
 
-        return str_replace(':', '_', $prefix);
+        return str_replace(':', '_', $prefix.$config['database']);
     }
 
     /**
@@ -163,11 +176,13 @@ abstract class Schema
      */
     protected function loadTables(): array
     {
-        if (!$this->cache) {
+        $cache = $this->getCache();
+
+        if (!$cache) {
             return $this->readTables();
         }
 
-        return $this->cache->remember(
+        return $cache->remember(
             $this->getCachePrefix().'.tables',
             [$this, 'readTables'](...)
         );

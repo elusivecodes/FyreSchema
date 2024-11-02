@@ -71,6 +71,6 @@ class MysqlSchema extends Schema
      */
     protected function tableSchema(string $name): MysqlTableSchema
     {
-        return new MysqlTableSchema($this, $name);
+        return $this->container->build(MysqlTableSchema::class, ['schema' => $this, 'tableName' => $name]);
     }
 }

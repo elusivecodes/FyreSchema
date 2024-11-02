@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Fyre\Schema;
 
 use Closure;
+use Fyre\DB\TypeParser;
 use Fyre\DB\Types\Type;
 
 use function array_key_exists;
@@ -30,15 +31,19 @@ abstract class TableSchema
 
     protected string $tableName;
 
+    protected TypeParser $typeParser;
+
     /**
      * New TableSchema constructor.
      *
      * @param Schema $schema The Schema.
+     * @param TypeParser $typeParser The TypeParser.
      * @param string $tableName The table name.
      */
-    public function __construct(Schema $schema, string $tableName)
+    public function __construct(Schema $schema, TypeParser $typeParser, string $tableName)
     {
         $this->schema = $schema;
+        $this->typeParser = $typeParser;
         $this->tableName = $tableName;
     }
 
@@ -192,9 +197,7 @@ abstract class TableSchema
 
         $type = static::getDatabaseType($column);
 
-        return $this->schema->getConnection()
-            ->getTypeParser()
-            ->use($type);
+        return $this->typeParser->use($type);
     }
 
     /**

@@ -29,10 +29,24 @@ use Fyre\Schema\SchemaRegistry;
 
 ## Basic Usage
 
-- `$cache` is a [*Cacher*](https://github.com/elusivecodes/FyreCache#cachers), and will default to *null*.
+- `$container` is a  [*Container*](https://github.com/elusivecodes/FyreContainer).
 
 ```php
-$schemaRegistry = new SchemaRegistry($cache);
+$schemaRegistry = new SchemaRegistry($container);
+```
+
+**Autoloading**
+
+It is recommended to bind the *SchemaRegistry* to the [*Container*](https://github.com/elusivecodes/FyreContainer) as a singleton.
+
+```php
+$container->singleton(SchemaRegistry::class);
+```
+
+Any dependencies will be injected automatically when loading from the [*Container*](https://github.com/elusivecodes/FyreContainer).
+
+```php
+$schemaRegistry = $container->use(SchemaRegistry::class);
 ```
 
 
@@ -59,6 +73,8 @@ Load the shared [*Schema*](#schemas) for a [*Connection*](https://github.com/elu
 $schema = $schemaRegistry->use($connection);
 ```
 
+[*Schema*](#schemas) dependencies will be resolved automatically from the [*Container*](https://github.com/elusivecodes/FyreContainer).
+
 
 ## Schemas
 
@@ -79,6 +95,8 @@ Get the [*TableSchema*](#table-schemas) for a table.
 ```php
 $tableSchema = $schema->describe($name);
 ```
+
+[*TableSchema*](#table-schemas) dependencies will be resolved automatically from the [*Container*](https://github.com/elusivecodes/FyreContainer).
 
 **Get Connection**
 

@@ -74,6 +74,6 @@ class PostgresSchema extends Schema
      */
     protected function tableSchema(string $name): PostgresTableSchema
     {
-        return new PostgresTableSchema($this, $name);
+        return $this->container->build(PostgresTableSchema::class, ['schema' => $this, 'tableName' => $name]);
     }
 }

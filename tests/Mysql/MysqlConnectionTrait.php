@@ -6,6 +6,7 @@ namespace Tests\Mysql;
 use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
 use Fyre\Cache\Handlers\FileCacher;
+use Fyre\Container\Container;
 use Fyre\DB\Connection;
 use Fyre\DB\ConnectionManager;
 use Fyre\DB\Handlers\Mysql\MysqlConnection;
@@ -26,9 +27,17 @@ trait MysqlConnectionTrait
 
     protected function setUp(): void
     {
-        $typeParser = new TypeParser();
+        $container = new Container();
+        $container->singleton(TypeParser::class);
+        $container->singleton(CacheManager::class);
+        $container->use(CacheManager::class)->setConfig('schema', [
+            'className' => FileCacher::class,
+            'path' => 'tmp',
+            'prefix' => 'schema.',
+            'expire' => 3600,
+        ]);
 
-        $this->db = (new ConnectionManager($typeParser))->build([
+        $this->db = $container->use(ConnectionManager::class)->build([
             'className' => MysqlConnection::class,
             'host' => getenv('MYSQL_HOST'),
             'username' => getenv('MYSQL_USERNAME'),
@@ -41,14 +50,8 @@ trait MysqlConnectionTrait
             'persist' => true,
         ]);
 
-        $this->cache = (new CacheManager())->build([
-            'className' => FileCacher::class,
-            'path' => 'tmp',
-            'prefix' => 'schema.',
-            'expire' => 3600,
-        ]);
-
-        $this->schema = (new SchemaRegistry($this->cache))->use($this->db);
+        $this->schema = $container->use(SchemaRegistry::class)->use($this->db);
+        $this->cache = $container->use(CacheManager::class)->use('schema');
 
         $this->db->query('DROP TABLE IF EXISTS test_values');
         $this->db->query('DROP TABLE IF EXISTS test');

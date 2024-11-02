@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Fyre\Schema;
 
-use Fyre\Cache\Cacher;
+use Fyre\Container\Container;
 use Fyre\DB\Connection;
 use Fyre\DB\Handlers\Mysql\MysqlConnection;
 use Fyre\DB\Handlers\Postgres\PostgresConnection;
@@ -25,7 +25,7 @@ use function ltrim;
  */
 class SchemaRegistry
 {
-    protected Cacher|null $cache = null;
+    protected Container $container;
 
     protected array $handlers = [
         MysqlConnection::class => MysqlSchema::class,
@@ -38,11 +38,11 @@ class SchemaRegistry
     /**
      * New SchemaRegistry constructor.
      *
-     * @param Cacher|null $cache The cache.
+     * @param Container $container The Container.
      */
-    public function __construct(Cacher|null $cache)
+    public function __construct(Container $container)
     {
-        $this->cache = $cache;
+        $this->container = $container;
         $this->schemas = new WeakMap();
     }
 
@@ -94,6 +94,6 @@ class SchemaRegistry
 
         $schemaClass = $this->handlers[$connectionKey];
 
-        return new $schemaClass($connection, $this->cache);
+        return $this->container->build($schemaClass, ['connection' => $connection]);
     }
 }

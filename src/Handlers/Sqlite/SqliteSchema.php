@@ -52,6 +52,6 @@ class SqliteSchema extends Schema
      */
     protected function tableSchema(string $name): SqliteTableSchema
     {
-        return new SqliteTableSchema($this, $name);
+        return $this->container->build(SqliteTableSchema::class, ['schema' => $this, 'tableName' => $name]);
     }
 }
