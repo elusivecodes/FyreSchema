@@ -32,6 +32,7 @@ class SqliteTableSchema extends TableSchema
         'int' => 'integer',
         'integer' => 'integer',
         'json' => 'json',
+        'mediumint' => 'integer',
         'numeric' => 'decimal',
         'real' => 'float',
         'smallint' => 'integer',
