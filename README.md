@@ -29,7 +29,7 @@ use Fyre\Schema\SchemaRegistry;
 
 ## Basic Usage
 
-- `$container` is a  [*Container*](https://github.com/elusivecodes/FyreContainer).
+- `$container` is a [*Container*](https://github.com/elusivecodes/FyreContainer).
 
 ```php
 $schemaRegistry = new SchemaRegistry($container);
