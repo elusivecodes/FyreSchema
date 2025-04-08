@@ -228,16 +228,16 @@
         },
         {
             "name": "fyre/db",
-            "version": "v6.2.2",
+            "version": "v6.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elusivecodes/FyreDB.git",
-                "reference": "dc21b0418f960d510d853fd58fe782f46335504c"
+                "reference": "a48e8bfc1065de5fa1c3e2590922fab74ac7b84c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/dc21b0418f960d510d853fd58fe782f46335504c",
-                "reference": "dc21b0418f960d510d853fd58fe782f46335504c",
+                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/a48e8bfc1065de5fa1c3e2590922fab74ac7b84c",
+                "reference": "a48e8bfc1065de5fa1c3e2590922fab74ac7b84c",
                 "shasum": ""
             },
             "require": {
@@ -272,9 +272,9 @@
             "description": "A database library.",
             "support": {
                 "issues": "https://github.com/elusivecodes/FyreDB/issues",
-                "source": "https://github.com/elusivecodes/FyreDB/tree/v6.2.2"
+                "source": "https://github.com/elusivecodes/FyreDB/tree/v6.2.3"
             },
-            "time": "2025-04-07T11:34:55+00:00"
+            "time": "2025-04-08T09:32:06+00:00"
         },
         {
             "name": "fyre/event",
@@ -1603,16 +1603,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.1.0",
+            "version": "12.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c433e7972440e1370a26879bb54c359f8898aa3a"
+                "reference": "6f2775cc4b7b19ba5a411c188e855eb0cc78a711"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c433e7972440e1370a26879bb54c359f8898aa3a",
-                "reference": "c433e7972440e1370a26879bb54c359f8898aa3a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6f2775cc4b7b19ba5a411c188e855eb0cc78a711",
+                "reference": "6f2775cc4b7b19ba5a411c188e855eb0cc78a711",
                 "shasum": ""
             },
             "require": {
@@ -1680,7 +1680,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.1.0"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.1.2"
             },
             "funding": [
                 {
@@ -1696,7 +1696,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-04-04T04:10:58+00:00"
+            "time": "2025-04-08T08:05:27+00:00"
         },
         {
             "name": "psr/container",
