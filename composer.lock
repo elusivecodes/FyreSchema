@@ -228,16 +228,16 @@
         },
         {
             "name": "fyre/db",
-            "version": "v6.2.4",
+            "version": "v6.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elusivecodes/FyreDB.git",
-                "reference": "5fc56860afb55e930e5d74498a971aea4ca17a75"
+                "reference": "14bcf33bd4c77067c74e412f697242043ad145d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/5fc56860afb55e930e5d74498a971aea4ca17a75",
-                "reference": "5fc56860afb55e930e5d74498a971aea4ca17a75",
+                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/14bcf33bd4c77067c74e412f697242043ad145d3",
+                "reference": "14bcf33bd4c77067c74e412f697242043ad145d3",
                 "shasum": ""
             },
             "require": {
@@ -272,9 +272,9 @@
             "description": "A database library.",
             "support": {
                 "issues": "https://github.com/elusivecodes/FyreDB/issues",
-                "source": "https://github.com/elusivecodes/FyreDB/tree/v6.2.4"
+                "source": "https://github.com/elusivecodes/FyreDB/tree/v6.2.5"
             },
-            "time": "2025-04-13T03:39:25+00:00"
+            "time": "2025-04-14T11:03:51+00:00"
         },
         {
             "name": "fyre/event",
@@ -365,16 +365,16 @@
         },
         {
             "name": "fyre/log",
-            "version": "v6.1.1",
+            "version": "v6.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elusivecodes/FyreLog.git",
-                "reference": "0a38364d4ab9d9ec3812ca13da2fc8b5a4161bbe"
+                "reference": "1e52653d51c406af80c92198921ddd017b3e5aee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elusivecodes/FyreLog/zipball/0a38364d4ab9d9ec3812ca13da2fc8b5a4161bbe",
-                "reference": "0a38364d4ab9d9ec3812ca13da2fc8b5a4161bbe",
+                "url": "https://api.github.com/repos/elusivecodes/FyreLog/zipball/1e52653d51c406af80c92198921ddd017b3e5aee",
+                "reference": "1e52653d51c406af80c92198921ddd017b3e5aee",
                 "shasum": ""
             },
             "require": {
@@ -407,9 +407,9 @@
             "description": "A logging library.",
             "support": {
                 "issues": "https://github.com/elusivecodes/FyreLog/issues",
-                "source": "https://github.com/elusivecodes/FyreLog/tree/v6.1.1"
+                "source": "https://github.com/elusivecodes/FyreLog/tree/v6.1.2"
             },
-            "time": "2025-04-13T03:36:38+00:00"
+            "time": "2025-04-14T11:01:28+00:00"
         },
         {
             "name": "fyre/path",
