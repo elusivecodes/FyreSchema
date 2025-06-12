@@ -25,8 +25,6 @@ use function ltrim;
  */
 class SchemaRegistry
 {
-    protected Container $container;
-
     protected array $handlers = [
         MysqlConnection::class => MysqlSchema::class,
         PostgresConnection::class => PostgresSchema::class,
@@ -40,9 +38,9 @@ class SchemaRegistry
      *
      * @param Container $container The Container.
      */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        protected Container $container
+    ) {
         $this->schemas = new WeakMap();
     }
 

@@ -27,12 +27,6 @@ abstract class TableSchema
 
     protected array|null $indexes = null;
 
-    protected Schema $schema;
-
-    protected string $tableName;
-
-    protected TypeParser $typeParser;
-
     /**
      * New TableSchema constructor.
      *
@@ -40,12 +34,11 @@ abstract class TableSchema
      * @param TypeParser $typeParser The TypeParser.
      * @param string $tableName The table name.
      */
-    public function __construct(Schema $schema, TypeParser $typeParser, string $tableName)
-    {
-        $this->schema = $schema;
-        $this->typeParser = $typeParser;
-        $this->tableName = $tableName;
-    }
+    public function __construct(
+        protected Schema $schema,
+        protected TypeParser $typeParser,
+        protected string $tableName
+    ) {}
 
     /**
      * Clear data from the cache.

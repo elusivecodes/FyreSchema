@@ -19,12 +19,6 @@ abstract class Schema
 {
     protected const CACHE_KEY = 'schema';
 
-    protected CacheManager $cacheManager;
-
-    protected Connection $connection;
-
-    protected Container $container;
-
     protected string $database;
 
     protected array $schemas = [];
@@ -38,12 +32,11 @@ abstract class Schema
      * @param CacheManager $cacheManager The CacheManager.
      * @param Connection $connection The Connection.
      */
-    public function __construct(Container $container, CacheManager $cacheManager, Connection $connection)
-    {
-        $this->container = $container;
-        $this->cacheManager = $cacheManager;
-        $this->connection = $connection;
-    }
+    public function __construct(
+        protected Container $container,
+        protected CacheManager $cacheManager,
+        protected Connection $connection
+    ) {}
 
     /**
      * Clear data from the cache.
