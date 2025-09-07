@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Postgres;
 
+use Fyre\Collection\Collection;
+use Fyre\Schema\Exceptions\SchemaException;
+use Fyre\Schema\Handlers\Postgres\PostgresTable;
 use PHPUnit\Framework\TestCase;
 
 final class SchemaTest extends TestCase
@@ -41,19 +44,26 @@ final class SchemaTest extends TestCase
 
     public function testTable(): void
     {
+        $table = $this->schema->table('test');
+
+        $this->assertInstanceOf(PostgresTable::class, $table);
+
         $this->assertSame(
-            [
-                'comment' => '',
-            ],
-            $this->schema->table('test')
+            'test',
+            $table->getName()
+        );
+
+        $this->assertSame(
+            '',
+            $table->getComment()
         );
     }
 
     public function testTableInvalid(): void
     {
-        $this->assertNull(
-            $this->schema->table('invalid')
-        );
+        $this->expectException(SchemaException::class);
+
+        $this->schema->table('invalid');
     }
 
     public function testTableNames(): void
@@ -69,16 +79,24 @@ final class SchemaTest extends TestCase
 
     public function testTables(): void
     {
+        $tables = $this->schema->tables();
+
+        $this->assertInstanceOf(Collection::class, $tables);
+
         $this->assertSame(
             [
                 'test' => [
+                    'name' => 'test',
                     'comment' => '',
                 ],
                 'test_values' => [
+                    'name' => 'test_values',
                     'comment' => '',
                 ],
             ],
-            $this->schema->tables()
+            $tables->map(
+                fn(PostgresTable $table): array => $table->toArray()
+            )->toArray()
         );
     }
 }

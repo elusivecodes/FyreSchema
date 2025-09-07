@@ -21,8 +21,10 @@
     },
     "require": {
         "fyre/cache": "^5.0",
+        "fyre/collection": "^1.0",
         "fyre/container": "^1.0",
         "fyre/db": "^6.0",
+        "fyre/macro": "^1.0",
         "fyre/typeparser": "^5.0"
     },
     "require-dev": {

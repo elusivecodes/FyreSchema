@@ -1,7 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Sqlite\TableSchema;
+namespace Tests\Sqlite\Table;
+
+use Fyre\Collection\Collection;
+use Fyre\Schema\Exceptions\SchemaException;
+use Fyre\Schema\Index;
 
 trait IndexTestTrait
 {
@@ -9,7 +13,7 @@ trait IndexTestTrait
     {
         $this->assertTrue(
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->hasIndex('name')
         );
     }
@@ -18,67 +22,96 @@ trait IndexTestTrait
     {
         $this->assertFalse(
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->hasIndex('invalid')
         );
     }
 
     public function testIndex(): void
     {
+        $index = $this->schema
+            ->table('test')
+            ->index('name');
+
+        $this->assertInstanceOf(Index::class, $index);
+
+        $this->assertSame(
+            'name',
+            $index->getName()
+        );
+
         $this->assertSame(
             [
-                'columns' => [
-                    'name',
-                ],
-                'unique' => true,
-                'primary' => false,
+                'name',
             ],
-            $this->schema
-                ->describe('test')
-                ->index('name')
+            $index->getColumns()
+        );
+
+        $this->assertTrue(
+            $index->isUnique()
+        );
+
+        $this->assertFalse(
+            $index->isPrimary()
+        );
+
+        $this->assertNull(
+            $index->getType()
         );
     }
 
     public function testIndexes(): void
     {
+        $indexes = $this->schema
+            ->table('test')
+            ->indexes();
+
+        $this->assertInstanceOf(Collection::class, $indexes);
+
         $this->assertSame(
             [
                 'primary' => [
+                    'name' => 'primary',
                     'columns' => [
                         'id',
                     ],
                     'unique' => true,
                     'primary' => true,
+                    'type' => null,
                 ],
                 'name' => [
+                    'name' => 'name',
                     'columns' => [
                         'name',
                     ],
                     'unique' => true,
                     'primary' => false,
+                    'type' => null,
                 ],
                 'name_value' => [
+                    'name' => 'name_value',
                     'columns' => [
                         'name',
                         'value',
                     ],
                     'unique' => false,
                     'primary' => false,
+                    'type' => null,
                 ],
             ],
-            $this->schema
-                ->describe('test')
-                ->indexes()
+            $indexes->map(
+                fn(Index $index): array => $index->toArray()
+            )->toArray()
         );
     }
 
     public function testIndexInvalid(): void
     {
-        $this->assertNull(
-            $this->schema
-                ->describe('test')
-                ->index('invalid')
-        );
+        $this->expectException(SchemaException::class);
+
+        $this->schema
+            ->table('test')
+            ->index('invalid');
     }
 
     public function testPrimaryKey(): void
@@ -88,7 +121,7 @@ trait IndexTestTrait
                 'id',
             ],
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->primaryKey()
         );
     }

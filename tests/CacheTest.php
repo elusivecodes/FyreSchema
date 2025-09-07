@@ -13,7 +13,7 @@ final class CacheTest extends TestCase
     public function testCacheColumns(): void
     {
         $this->schema
-            ->describe('test')
+            ->table('test')
             ->columns();
 
         $this->assertSame(
@@ -159,7 +159,7 @@ final class CacheTest extends TestCase
     public function testCacheForeignKeys(): void
     {
         $this->schema
-            ->describe('test_values')
+            ->table('test_values')
             ->foreignKeys();
 
         $this->assertSame(
@@ -172,8 +172,8 @@ final class CacheTest extends TestCase
                     'referencedColumns' => [
                         'id',
                     ],
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE',
+                    'onUpdate' => 'CASCADE',
+                    'onDelete' => 'CASCADE',
                 ],
             ],
             $this->cache->get('test.test_values.foreign_keys')
@@ -183,7 +183,7 @@ final class CacheTest extends TestCase
     public function testCacheIndexes(): void
     {
         $this->schema
-            ->describe('test')
+            ->table('test')
             ->indexes();
 
         $this->assertSame(

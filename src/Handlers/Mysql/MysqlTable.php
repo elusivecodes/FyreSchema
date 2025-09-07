@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace Fyre\Schema\Handlers\Mysql;
 
+use Fyre\Container\Container;
+use Fyre\DB\TypeParser;
 use Fyre\DB\ValueBinder;
-use Fyre\Schema\TableSchema;
+use Fyre\Schema\Schema;
+use Fyre\Schema\Table;
 
 use function array_map;
 use function explode;
@@ -15,38 +18,94 @@ use function strtolower;
 use function substr;
 
 /**
- * MysqlTableSchema
+ * MysqlTable
  */
-class MysqlTableSchema extends TableSchema
+class MysqlTable extends Table
 {
-    protected static array $types = [
-        'bigint' => 'integer',
-        'binary' => 'binary',
-        'blob' => 'binary',
-        'boolean' => 'boolean',
-        'date' => 'date',
-        'datetime' => 'datetime',
-        'decimal' => 'decimal',
-        'double' => 'float',
-        'enum' => 'enum',
-        'float' => 'float',
-        'int' => 'integer',
-        'json' => 'json',
-        'longblob' => 'binary',
-        'longtext' => 'text',
-        'mediumblob' => 'binary',
-        'mediumint' => 'integer',
-        'mediumtext' => 'text',
-        'set' => 'set',
-        'smallint' => 'integer',
-        'text' => 'text',
-        'time' => 'time',
-        'timestamp' => 'datetime',
-        'tinyblob' => 'binary',
-        'tinyint' => 'integer',
-        'tinytext' => 'text',
-        'varbinary' => 'binary',
-    ];
+    /**
+     * New MysqlTable constructor.
+     *
+     * @param Schema $schema The Schema.
+     * @param string $name The table name.
+     * @param string|null $comment The table comment.
+     * @param string|null $engine The table engine.
+     * @param string|null $charset The table character set.
+     * @param string|null $collation The table collation.
+     * @param TypeParser $typeParser The TypeParser.
+     */
+    public function __construct(
+        Container $container,
+        Schema $schema,
+        string $name,
+        string|null $comment = null,
+        protected string|null $engine = null,
+        protected string|null $charset = null,
+        protected string|null $collation = null,
+    ) {
+        parent::__construct($container, $schema, $name, $comment);
+    }
+
+    /**
+     * Get the table character set.
+     *
+     * @return string|null The table character set.
+     */
+    public function getCharset(): string|null
+    {
+        return $this->charset;
+    }
+
+    /**
+     * Get the table collation.
+     *
+     * @return string|null The table collation.
+     */
+    public function getCollation(): string|null
+    {
+        return $this->collation;
+    }
+
+    /**
+     * Get the table engine.
+     *
+     * @return string|null The table engine.
+     */
+    public function getEngine(): string|null
+    {
+        return $this->engine;
+    }
+
+    /**
+     * Get the table data as an array.
+     *
+     * @return array The table data.
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'engine' => $this->engine,
+            'charset' => $this->charset,
+            'collation' => $this->collation,
+            'comment' => $this->comment,
+        ];
+    }
+
+    /**
+     * Build a Column.
+     *
+     * @param string $name The column name.
+     * @param array $data The column data.
+     * @return MysqlColumn The Column.
+     */
+    protected function buildColumn(string $name, array $data): MysqlColumn
+    {
+        return $this->container->build(MysqlColumn::class, [
+            'table' => $this,
+            'name' => $name,
+            ...$data,
+        ]);
+    }
 
     /**
      * Read the table columns data.
@@ -73,7 +132,7 @@ class MysqlTableSchema extends TableSchema
             ])
             ->where([
                 'Columns.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'Columns.TABLE_NAME' => $this->tableName,
+                'Columns.TABLE_NAME' => $this->name,
             ])
             ->orderBy([
                 'Columns.ORDINAL_POSITION' => 'ASC',
@@ -164,7 +223,7 @@ class MysqlTableSchema extends TableSchema
             ])
             ->where([
                 'KeyColumns.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'KeyColumns.TABLE_NAME' => $this->tableName,
+                'KeyColumns.TABLE_NAME' => $this->name,
             ])
             ->orderBy([
                 'KeyColumns.ORDINAL_POSITION' => 'ASC',
@@ -181,8 +240,8 @@ class MysqlTableSchema extends TableSchema
                 'columns' => [],
                 'referencedTable' => $result['ref_table_name'],
                 'referencedColumns' => [],
-                'update' => $result['on_update'],
-                'delete' => $result['on_delete'],
+                'onUpdate' => $result['on_update'],
+                'onDelete' => $result['on_delete'],
             ];
 
             $foreignKeys[$constraintName]['columns'][] = $result['column_name'];
@@ -214,7 +273,7 @@ class MysqlTableSchema extends TableSchema
             ])
             ->where([
                 'Statistics.TABLE_SCHEMA' => $this->schema->getDatabaseName(),
-                'Statistics.TABLE_NAME' => $this->tableName,
+                'Statistics.TABLE_NAME' => $this->name,
             ])
             ->groupBy([
                 'Statistics.INDEX_NAME',

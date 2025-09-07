@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Mysql;
 
+use Fyre\Collection\Collection;
+use Fyre\Schema\Exceptions\SchemaException;
+use Fyre\Schema\Handlers\Mysql\MysqlTable;
 use PHPUnit\Framework\TestCase;
 
 final class SchemaTest extends TestCase
@@ -41,22 +44,41 @@ final class SchemaTest extends TestCase
 
     public function testTable(): void
     {
+        $table = $this->schema->table('test');
+
+        $this->assertInstanceOf(MysqlTable::class, $table);
+
         $this->assertSame(
-            [
-                'engine' => 'InnoDB',
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'comment' => '',
-            ],
-            $this->schema->table('test')
+            'test',
+            $table->getName()
+        );
+
+        $this->assertSame(
+            'InnoDB',
+            $table->getEngine()
+        );
+
+        $this->assertSame(
+            '',
+            $table->getComment()
+        );
+
+        $this->assertSame(
+            'utf8mb4',
+            $table->getCharset()
+        );
+
+        $this->assertSame(
+            'utf8mb4_unicode_ci',
+            $table->getCollation()
         );
     }
 
     public function testTableInvalid(): void
     {
-        $this->assertNull(
-            $this->schema->table('invalid')
-        );
+        $this->expectException(SchemaException::class);
+
+        $this->schema->table('invalid');
     }
 
     public function testTableNames(): void
@@ -72,22 +94,30 @@ final class SchemaTest extends TestCase
 
     public function testTables(): void
     {
+        $tables = $this->schema->tables();
+
+        $this->assertInstanceOf(Collection::class, $tables);
+
         $this->assertSame(
             [
                 'test' => [
+                    'name' => 'test',
                     'engine' => 'InnoDB',
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'comment' => '',
                 ],
                 'test_values' => [
+                    'name' => 'test_values',
                     'engine' => 'InnoDB',
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'comment' => '',
                 ],
             ],
-            $this->schema->tables()
+            $tables->map(
+                fn(MysqlTable $table): array => $table->toArray()
+            )->toArray()
         );
     }
 }

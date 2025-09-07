@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Sqlite\TableSchema;
+namespace Tests\Postgres\Table;
 
 use Fyre\DB\Types\BooleanType;
 use Fyre\DB\Types\DateTimeType;
@@ -14,8 +14,9 @@ trait TypeTestTrait
     {
         $this->assertInstanceOf(
             StringType::class,
-            $this->schema->describe('test')
-                ->getType('name')
+            $this->schema->table('test')
+                ->column('name')
+                ->type()
         );
     }
 
@@ -23,8 +24,9 @@ trait TypeTestTrait
     {
         $this->assertInstanceOf(
             BooleanType::class,
-            $this->schema->describe('test')
-                ->getType('bool')
+            $this->schema->table('test')
+                ->column('bool')
+                ->type()
         );
     }
 
@@ -32,8 +34,9 @@ trait TypeTestTrait
     {
         $this->assertInstanceOf(
             DateTimeType::class,
-            $this->schema->describe('test')
-                ->getType('created')
+            $this->schema->table('test')
+                ->column('created')
+                ->type()
         );
     }
 
@@ -41,8 +44,9 @@ trait TypeTestTrait
     {
         $this->assertInstanceOf(
             DecimalType::class,
-            $this->schema->describe('test')
-                ->getType('price')
+            $this->schema->table('test')
+                ->column('price')
+                ->type()
         );
     }
 }

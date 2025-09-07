@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Sqlite\TableSchema;
+namespace Tests\Postgres\Table;
 
 trait DefaultValueTestTrait
 {
@@ -10,8 +10,9 @@ trait DefaultValueTestTrait
         $this->assertSame(
             'default',
             $this->schema
-                ->describe('test')
-                ->defaultValue('text')
+                ->table('test')
+                ->column('text')
+                ->defaultValue()
         );
     }
 
@@ -20,8 +21,9 @@ trait DefaultValueTestTrait
         $this->assertSame(
             2.5,
             $this->schema
-                ->describe('test')
-                ->defaultValue('price')
+                ->table('test')
+                ->column('price')
+                ->defaultValue()
         );
     }
 
@@ -30,8 +32,9 @@ trait DefaultValueTestTrait
         $this->assertMatchesRegularExpression(
             '/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/',
             $this->schema
-                ->describe('test')
-                ->defaultValue('created')
+                ->table('test')
+                ->column('created')
+                ->defaultValue()
         );
     }
 
@@ -40,17 +43,9 @@ trait DefaultValueTestTrait
         $this->assertSame(
             5,
             $this->schema
-                ->describe('test')
-                ->defaultValue('value')
-        );
-    }
-
-    public function testDefaultValueInvalid(): void
-    {
-        $this->assertNull(
-            $this->schema
-                ->describe('test')
-                ->defaultValue('invalid')
+                ->table('test')
+                ->column('value')
+                ->defaultValue()
         );
     }
 
@@ -59,8 +54,9 @@ trait DefaultValueTestTrait
         $this->assertSame(
             '',
             $this->schema
-                ->describe('test_values')
-                ->defaultValue('value')
+                ->table('test_values')
+                ->column('value')
+                ->defaultValue()
         );
     }
 
@@ -68,8 +64,9 @@ trait DefaultValueTestTrait
     {
         $this->assertNull(
             $this->schema
-                ->describe('test')
-                ->defaultValue('name')
+                ->table('test')
+                ->column('name')
+                ->defaultValue()
         );
     }
 }

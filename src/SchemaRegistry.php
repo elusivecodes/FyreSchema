@@ -12,6 +12,7 @@ use Fyre\Schema\Exceptions\SchemaException;
 use Fyre\Schema\Handlers\Mysql\MysqlSchema;
 use Fyre\Schema\Handlers\Postgres\PostgresSchema;
 use Fyre\Schema\Handlers\Sqlite\SqliteSchema;
+use Fyre\Utility\Traits\MacroTrait;
 use WeakMap;
 
 use function array_key_exists;
@@ -25,6 +26,8 @@ use function ltrim;
  */
 class SchemaRegistry
 {
+    use MacroTrait;
+
     protected array $handlers = [
         MysqlConnection::class => MysqlSchema::class,
         PostgresConnection::class => PostgresSchema::class,

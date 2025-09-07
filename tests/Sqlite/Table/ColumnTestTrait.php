@@ -1,35 +1,70 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Postgres\TableSchema;
+namespace Tests\Sqlite\Table;
+
+use Fyre\Collection\Collection;
+use Fyre\Schema\Column;
+use Fyre\Schema\Exceptions\SchemaException;
 
 trait ColumnTestTrait
 {
     public function testColumn(): void
     {
+        $column = $this->schema
+            ->table('test')
+            ->column('name');
+
+        $this->assertInstanceOf(Column::class, $column);
+
         $this->assertSame(
-            [
-                'type' => 'character varying',
-                'length' => 255,
-                'precision' => null,
-                'nullable' => true,
-                'default' => 'NULL',
-                'comment' => '',
-                'autoIncrement' => false,
-            ],
-            $this->schema
-                ->describe('test')
-                ->column('name')
+            'name',
+            $column->getName()
+        );
+
+        $this->assertSame(
+            'varchar',
+            $column->getType()
+        );
+
+        $this->assertSame(
+            255,
+            $column->getLength()
+        );
+
+        $this->assertNull(
+            $column->getPrecision()
+        );
+
+        $this->assertTrue(
+            $column->isNullable()
+        );
+
+        $this->assertFalse(
+            $column->isUnsigned()
+        );
+
+        $this->assertSame(
+            'NULL',
+            $column->getDefault()
+        );
+
+        $this->assertNull(
+            $column->getComment()
+        );
+
+        $this->assertFalse(
+            $column->isAutoIncrement()
         );
     }
 
     public function testColumnInvalid(): void
     {
-        $this->assertNull(
-            $this->schema
-                ->describe('test')
-                ->column('invalid')
-        );
+        $this->expectException(SchemaException::class);
+
+        $this->schema
+            ->table('test')
+            ->column('invalid');
     }
 
     public function testColumnNames(): void
@@ -42,111 +77,124 @@ trait ColumnTestTrait
                 'price',
                 'text',
                 'bool',
-                'date_precision',
                 'created',
                 'modified',
             ],
-            $this->schema->describe('test')->columnNames()
+            $this->schema->table('test')
+                ->columnNames()
         );
     }
 
     public function testColumns(): void
     {
+        $columns = $this->schema
+            ->table('test')
+            ->columns();
+
+        $this->assertInstanceOf(Collection::class, $columns);
+
         $this->assertSame(
             [
                 'id' => [
+                    'name' => 'id',
                     'type' => 'integer',
-                    'length' => 11,
+                    'length' => null,
                     'precision' => 0,
                     'nullable' => false,
+                    'unsigned' => true,
                     'default' => null,
-                    'comment' => '',
+                    'comment' => null,
                     'autoIncrement' => true,
                 ],
                 'name' => [
-                    'type' => 'character varying',
+                    'name' => 'name',
+                    'type' => 'varchar',
                     'length' => 255,
                     'precision' => null,
                     'nullable' => true,
+                    'unsigned' => false,
                     'default' => 'NULL',
-                    'comment' => '',
+                    'comment' => null,
                     'autoIncrement' => false,
                 ],
                 'value' => [
-                    'type' => 'double precision',
+                    'name' => 'value',
+                    'type' => 'integer',
                     'length' => null,
-                    'precision' => null,
+                    'precision' => 0,
                     'nullable' => false,
+                    'unsigned' => true,
                     'default' => '5',
-                    'comment' => '',
+                    'comment' => null,
                     'autoIncrement' => false,
                 ],
                 'price' => [
+                    'name' => 'price',
                     'type' => 'numeric',
                     'length' => 10,
                     'precision' => 2,
                     'nullable' => false,
+                    'unsigned' => true,
                     'default' => '2.50',
-                    'comment' => '',
+                    'comment' => null,
                     'autoIncrement' => false,
                 ],
                 'text' => [
-                    'type' => 'character varying',
+                    'name' => 'text',
+                    'type' => 'varchar',
                     'length' => 255,
                     'precision' => null,
                     'nullable' => false,
+                    'unsigned' => false,
                     'default' => '\'default\'',
-                    'comment' => '',
+                    'comment' => null,
                     'autoIncrement' => false,
                 ],
                 'bool' => [
+                    'name' => 'bool',
                     'type' => 'boolean',
                     'length' => null,
                     'precision' => null,
                     'nullable' => false,
-                    'default' => 'false',
-                    'comment' => '',
-                    'autoIncrement' => false,
-                ],
-                'date_precision' => [
-                    'type' => 'timestamp without time zone',
-                    'length' => null,
-                    'precision' => 0,
-                    'nullable' => true,
-                    'default' => 'NULL',
-                    'comment' => '',
+                    'unsigned' => false,
+                    'default' => 'FALSE',
+                    'comment' => null,
                     'autoIncrement' => false,
                 ],
                 'created' => [
-                    'type' => 'timestamp without time zone',
+                    'name' => 'created',
+                    'type' => 'datetime',
                     'length' => null,
-                    'precision' => 6,
+                    'precision' => null,
                     'nullable' => false,
+                    'unsigned' => false,
                     'default' => 'CURRENT_TIMESTAMP',
-                    'comment' => '',
+                    'comment' => null,
                     'autoIncrement' => false,
                 ],
                 'modified' => [
-                    'type' => 'timestamp without time zone',
+                    'name' => 'modified',
+                    'type' => 'datetime',
                     'length' => null,
-                    'precision' => 6,
+                    'precision' => null,
                     'nullable' => true,
+                    'unsigned' => false,
                     'default' => 'CURRENT_TIMESTAMP',
-                    'comment' => '',
+                    'comment' => null,
                     'autoIncrement' => false,
                 ],
             ],
-            $this->schema
-                ->describe('test')
-                ->columns()
+            $columns->map(
+                fn(Column $column): array => $column->toArray()
+            )->toArray()
         );
     }
 
-    public function testHasAutoincrement(): void
+    public function testHasAutoIncrement(): void
     {
         $this->assertTrue(
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->hasAutoIncrement()
         );
     }
@@ -155,7 +203,7 @@ trait ColumnTestTrait
     {
         $this->assertTrue(
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->hasColumn('name')
         );
     }
@@ -164,35 +212,8 @@ trait ColumnTestTrait
     {
         $this->assertFalse(
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->hasColumn('invalid')
-        );
-    }
-
-    public function testIsNullable(): void
-    {
-        $this->assertTrue(
-            $this->schema
-                ->describe('test')
-                ->isNullable('name')
-        );
-    }
-
-    public function testIsNullableFalse(): void
-    {
-        $this->assertFalse(
-            $this->schema
-                ->describe('test')
-                ->isNullable('id')
-        );
-    }
-
-    public function testIsNullableInvalid(): void
-    {
-        $this->assertFalse(
-            $this->schema
-                ->describe('test')
-                ->isNullable('invalid')
         );
     }
 }

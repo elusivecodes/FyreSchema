@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Sqlite;
 
+use Fyre\Collection\Collection;
+use Fyre\Schema\Exceptions\SchemaException;
+use Fyre\Schema\Handlers\Sqlite\SqliteTable;
 use PHPUnit\Framework\TestCase;
 
 final class SchemaTest extends TestCase
@@ -41,17 +44,25 @@ final class SchemaTest extends TestCase
 
     public function testTable(): void
     {
+        $table = $this->schema->table('test');
+
+        $this->assertInstanceOf(SqliteTable::class, $table);
+
         $this->assertSame(
-            [],
-            $this->schema->table('test')
+            'test',
+            $table->getName()
+        );
+
+        $this->assertNull(
+            $table->getComment()
         );
     }
 
     public function testTableInvalid(): void
     {
-        $this->assertNull(
-            $this->schema->table('invalid')
-        );
+        $this->expectException(SchemaException::class);
+
+        $this->schema->table('invalid');
     }
 
     public function testTableNames(): void
@@ -67,12 +78,24 @@ final class SchemaTest extends TestCase
 
     public function testTables(): void
     {
+        $tables = $this->schema->tables();
+
+        $this->assertInstanceOf(Collection::class, $tables);
+
         $this->assertSame(
             [
-                'test' => [],
-                'test_values' => [],
+                'test' => [
+                    'name' => 'test',
+                    'comment' => null,
+                ],
+                'test_values' => [
+                    'name' => 'test_values',
+                    'comment' => null,
+                ],
             ],
-            $this->schema->tables()
+            $tables->map(
+                fn(SqliteTable $table): array => $table->toArray()
+            )->toArray()
         );
     }
 }

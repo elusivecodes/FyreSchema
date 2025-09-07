@@ -1,39 +1,88 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Mysql\TableSchema;
+namespace Tests\Mysql\Table;
+
+use Fyre\Collection\Collection;
+use Fyre\Schema\Exceptions\SchemaException;
+use Fyre\Schema\Handlers\Mysql\MysqlColumn;
 
 trait ColumnTestTrait
 {
     public function testColumn(): void
     {
+        $column = $this->schema
+            ->table('test')
+            ->column('name');
+
+        $this->assertInstanceOf(
+            MysqlColumn::class,
+            $column
+        );
+
         $this->assertSame(
-            [
-                'type' => 'varchar',
-                'length' => 255,
-                'precision' => null,
-                'values' => null,
-                'nullable' => true,
-                'unsigned' => false,
-                'default' => 'NULL',
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'comment' => '',
-                'autoIncrement' => false,
-            ],
-            $this->schema
-                ->describe('test')
-                ->column('name')
+            'name',
+            $column->getName()
+        );
+
+        $this->assertSame(
+            'varchar',
+            $column->getType()
+        );
+
+        $this->assertSame(
+            255,
+            $column->getLength()
+        );
+
+        $this->assertNull(
+            $column->getPrecision()
+        );
+
+        $this->assertNull(
+            $column->getValues()
+        );
+
+        $this->assertTrue(
+            $column->isNullable()
+        );
+
+        $this->assertFalse(
+            $column->isUnsigned()
+        );
+
+        $this->assertSame(
+            'NULL',
+            $column->getDefault()
+        );
+
+        $this->assertSame(
+            'utf8mb4',
+            $column->getCharset()
+        );
+
+        $this->assertSame(
+            'utf8mb4_unicode_ci',
+            $column->getCollation()
+        );
+
+        $this->assertSame(
+            '',
+            $column->getComment()
+        );
+
+        $this->assertFalse(
+            $column->isAutoIncrement()
         );
     }
 
     public function testColumnInvalid(): void
     {
-        $this->assertNull(
-            $this->schema
-                ->describe('test')
-                ->column('invalid')
-        );
+        $this->expectException(SchemaException::class);
+
+        $this->schema
+            ->table('test')
+            ->column('invalid');
     }
 
     public function testColumnNames(): void
@@ -51,15 +100,23 @@ trait ColumnTestTrait
                 'created',
                 'modified',
             ],
-            $this->schema->describe('test')->columnNames()
+            $this->schema->table('test')
+                ->columnNames()
         );
     }
 
     public function testColumns(): void
     {
+        $columns = $this->schema
+            ->table('test')
+            ->columns();
+
+        $this->assertInstanceOf(Collection::class, $columns);
+
         $this->assertSame(
             [
                 'id' => [
+                    'name' => 'id',
                     'type' => 'int',
                     'length' => 10,
                     'precision' => 0,
@@ -73,6 +130,7 @@ trait ColumnTestTrait
                     'autoIncrement' => true,
                 ],
                 'name' => [
+                    'name' => 'name',
                     'type' => 'varchar',
                     'length' => 255,
                     'precision' => null,
@@ -86,6 +144,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'value' => [
+                    'name' => 'value',
                     'type' => 'int',
                     'length' => 10,
                     'precision' => 0,
@@ -99,6 +158,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'price' => [
+                    'name' => 'price',
                     'type' => 'decimal',
                     'length' => 10,
                     'precision' => 2,
@@ -112,6 +172,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'text' => [
+                    'name' => 'text',
                     'type' => 'varchar',
                     'length' => 255,
                     'precision' => null,
@@ -125,6 +186,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'test' => [
+                    'name' => 'test',
                     'type' => 'enum',
                     'length' => null,
                     'precision' => null,
@@ -141,6 +203,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'bool' => [
+                    'name' => 'bool',
                     'type' => 'tinyint',
                     'length' => 1,
                     'precision' => 0,
@@ -154,6 +217,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'date_precision' => [
+                    'name' => 'date_precision',
                     'type' => 'datetime',
                     'length' => null,
                     'precision' => 6,
@@ -167,6 +231,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'created' => [
+                    'name' => 'created',
                     'type' => 'datetime',
                     'length' => null,
                     'precision' => null,
@@ -180,6 +245,7 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
                 'modified' => [
+                    'name' => 'modified',
                     'type' => 'datetime',
                     'length' => null,
                     'precision' => null,
@@ -193,17 +259,17 @@ trait ColumnTestTrait
                     'autoIncrement' => false,
                 ],
             ],
-            $this->schema
-                ->describe('test')
-                ->columns()
+            $columns->map(
+                fn(MysqlColumn $column): array => $column->toArray()
+            )->toArray()
         );
     }
 
-    public function testHasAutoincrement(): void
+    public function testHasAutoIncrement(): void
     {
         $this->assertTrue(
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->hasAutoIncrement()
         );
     }
@@ -212,7 +278,7 @@ trait ColumnTestTrait
     {
         $this->assertTrue(
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->hasColumn('name')
         );
     }
@@ -221,35 +287,8 @@ trait ColumnTestTrait
     {
         $this->assertFalse(
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->hasColumn('invalid')
-        );
-    }
-
-    public function testIsNullable(): void
-    {
-        $this->assertTrue(
-            $this->schema
-                ->describe('test')
-                ->isNullable('name')
-        );
-    }
-
-    public function testIsNullableFalse(): void
-    {
-        $this->assertFalse(
-            $this->schema
-                ->describe('test')
-                ->isNullable('id')
-        );
-    }
-
-    public function testIsNullableInvalid(): void
-    {
-        $this->assertFalse(
-            $this->schema
-                ->describe('test')
-                ->isNullable('invalid')
         );
     }
 }

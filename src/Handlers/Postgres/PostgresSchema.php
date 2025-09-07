@@ -11,6 +11,22 @@ use Fyre\Schema\Schema;
 class PostgresSchema extends Schema
 {
     /**
+     * Build a Table.
+     *
+     * @param string $name The table name.
+     * @param array $data The table data.
+     * @return PostgresTable The Table.
+     */
+    protected function buildTable(string $name, array $data): PostgresTable
+    {
+        return $this->container->build(PostgresTable::class, [
+            'schema' => $this,
+            'name' => $name,
+            ...$data,
+        ]);
+    }
+
+    /**
      * Read the schema tables data.
      *
      * @return array The schema tables data.
@@ -64,16 +80,5 @@ class PostgresSchema extends Schema
         }
 
         return $tables;
-    }
-
-    /**
-     * Create a TableSchema.
-     *
-     * @param string $name The table name.
-     * @return TableSchemaInterface The TableSchema.
-     */
-    protected function tableSchema(string $name): PostgresTableSchema
-    {
-        return $this->container->build(PostgresTableSchema::class, ['schema' => $this, 'tableName' => $name]);
     }
 }

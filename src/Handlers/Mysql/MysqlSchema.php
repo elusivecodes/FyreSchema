@@ -11,6 +11,22 @@ use Fyre\Schema\Schema;
 class MysqlSchema extends Schema
 {
     /**
+     * Build a Table.
+     *
+     * @param string $name The table name.
+     * @param array $data The table data.
+     * @return MysqlTable The Table.
+     */
+    protected function buildTable(string $name, array $data): MysqlTable
+    {
+        return $this->container->build(MysqlTable::class, [
+            'schema' => $this,
+            'name' => $name,
+            ...$data,
+        ]);
+    }
+
+    /**
      * Read the schema tables data.
      *
      * @return array The schema tables data.
@@ -61,16 +77,5 @@ class MysqlSchema extends Schema
         }
 
         return $tables;
-    }
-
-    /**
-     * Create a TableSchema.
-     *
-     * @param string $name The table name.
-     * @return TableSchemaInterface The TableSchema.
-     */
-    protected function tableSchema(string $name): MysqlTableSchema
-    {
-        return $this->container->build(MysqlTableSchema::class, ['schema' => $this, 'tableName' => $name]);
     }
 }

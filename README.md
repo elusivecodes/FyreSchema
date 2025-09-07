@@ -8,7 +8,12 @@
 - [Basic Usage](#basic-usage)
 - [Methods](#methods)
 - [Schemas](#schemas)
-- [Table Schemas](#table-schemas)
+- [Tables](#tables)
+    - [Mysql Tables](#mysql-tables)
+- [Columns](#columns)
+    - [Mysql Columns](#mysql-columns)
+- [Indexes](#indexes)
+- [Foreign Keys](#foreign-keys)
 
 
 
@@ -80,23 +85,11 @@ $schema = $schemaRegistry->use($connection);
 
 **Clear**
 
-Clear data from the cache.
+Clear the table data (including cache).
 
 ```php
 $schema->clear();
 ```
-
-**Describe**
-
-Get the [*TableSchema*](#table-schemas) for a table.
-
-- `$name` is a string representing the table name.
-
-```php
-$tableSchema = $schema->describe($name);
-```
-
-[*TableSchema*](#table-schemas) dependencies will be resolved automatically from the [*Container*](https://github.com/elusivecodes/FyreContainer).
 
 **Get Connection**
 
@@ -126,7 +119,7 @@ $hasTable = $schema->hasTable($name);
 
 **Table**
 
-Get the data for a table.
+Load a [*Table*](#tables).
 
 - `$name` is a string representing the table name.
 
@@ -144,31 +137,33 @@ $tableNames = $schema->tableNames();
 
 **Tables**
 
-Get the data for all schema tables.
+Load all schema tables.
 
 ```php
 $tables = $schema->tables();
 ```
 
+This method will return a [*Collection*](https://github.com/elusivecodes/FyreCollection) containing the loaded [tables](#tables).
 
-## Table Schemas
+
+## Tables
 
 **Clear**
 
-Clear data from the cache.
+Clear the table data (including cache).
 
 ```php
-$tableSchema->clear();
+$table->clear();
 ```
 
 **Column**
 
-Get the data for a table column.
+Load a [*Column*](#columns).
 
 - `$name` is a string representing the column name.
 
 ```php
-$column = $tableSchema->column($name);
+$column = $table->column($name);
 ```
 
 **Column Names**
@@ -176,45 +171,53 @@ $column = $tableSchema->column($name);
 Get the names of all table columns.
 
 ```php
-$columnNames = $tableSchema->columnNames();
+$columnNames = $table->columnNames();
 ```
 
 **Columns**
 
-Get the data for all table columns.
+Load all table columns.
 
 ```php
-$columns = $tableSchema->columns();
+$columns = $table->columns();
 ```
 
-**Default Value**
-
-Get the default value for a column.
-
-- `$name` is a string representing the column name.
-
-```php
-$defaultValue = $tableSchema->defaultValue($name);
-```
-
-This method will evaluate expression values (eg. *current_timestamp()*).
+This method will return a [*Collection*](https://github.com/elusivecodes/FyreCollection) containing the loaded [columns](#columns).
 
 **Foreign Key**
 
-Get the data for a table foreign key.
+Load a [*ForeignKey*](#foreign-keys).
 
 - `$name` is a string representing the foreign key name.
 
 ```php
-$foreignKey = $tableSchema->foreignKey($name);
+$foreignKey = $table->foreignKey($name);
 ```
 
 **Foreign Keys**
 
-Get the data for all table foreign keys.
+Load all table foreign keys.
 
 ```php
-$foreignKeys = $tableSchema->foreignKeys();
+$foreignKeys = $table->foreignKeys();
+```
+
+This method will return a [*Collection*](https://github.com/elusivecodes/FyreCollection) containing the loaded [foreign keys](#foreign-keys).
+
+**Get Comment**
+
+Get the table comment.
+
+```php
+$comment = $table->getComment();
+```
+
+**Get Name**
+
+Get the table name.
+
+```php
+$name = $table->getName();
 ```
 
 **Get Schema**
@@ -222,25 +225,7 @@ $foreignKeys = $tableSchema->foreignKeys();
 Get the [*Schema*](#schemas).
 
 ```php
-$schema = $tableSchema->getSchema();
-```
-
-**Get Table Name**
-
-Get the table name.
-
-```php
-$tableName = $tableSchema->getTableName();
-```
-
-**Get Type**
-
-Get the [*Type*](https://github.com/elusivecodes/FyreTypeParser) parser for a column.
-
-- `$name` is a string representing the column name.
-
-```php
-$parser = $tableSchema->getType($name);
+$schema = $table->getSchema();
 ```
 
 **Has Auto Increment**
@@ -248,7 +233,7 @@ $parser = $tableSchema->getType($name);
 Determine whether the table has an auto increment column.
 
 ```php
-$hasAutoIncrement = $tableSchema->hasAutoIncrement();
+$hasAutoIncrement = $table->hasAutoIncrement();
 ```
 
 **Has Column**
@@ -258,7 +243,7 @@ Determine whether the table has a column.
 - `$name` is a string representing the column name.
 
 ```php
-$hasColumn = $tableSchema->hasColumn($name);
+$hasColumn = $table->hasColumn($name);
 ```
 
 **Has Foreign Key**
@@ -268,7 +253,7 @@ Determine whether the table has a foreign key.
 - `$name` is a string representing the foreign key name.
 
 ```php
-$hasForeignKey = $tableSchema->hasForeignKey($name);
+$hasForeignKey = $table->hasForeignKey($name);
 ```
 
 **Has Index**
@@ -278,41 +263,326 @@ Determine whether the table has an index.
 - `$name` is a string representing the index name.
 
 ```php
-$hasIndex = $tableSchema->hasIndex($name);
+$hasIndex = $table->hasIndex($name);
 ```
 
 **Index**
 
-Get the data for a table index.
+Load an [*Index*](#indexes).
 
 - `$name` is a string representing the index name.
 
 ```php
-$index = $tableSchema->index($name);
+$index = $table->index($name);
 ```
 
 **Indexes**
 
-Get the data for all table indexes.
+Load all table indexes.
 
 ```php
-$indexes = $tableSchema->indexes();
+$indexes = $table->indexes();
 ```
 
-**Is Nullable**
-
-Determine whether a table column is nullable.
-
-- `$name` is a string representing the column name.
-
-```php
-$isNullable = $tableSchema->isNullable($name);
-```
+This method will return a [*Collection*](https://github.com/elusivecodes/FyreCollection) containing the loaded [indexes](#indexes).
 
 **Primary Key**
 
 Get the primary key for the table.
 
 ```php
-$primaryKey = $tableSchema->primaryKey();
+$primaryKey = $table->primaryKey();
+```
+
+**To Array**
+
+Get the table data as an array.
+
+```php
+$data = $table->toArray();
+```
+
+### Mysql Tables
+
+**Get Charset**
+
+Get the table character set.
+
+```php
+$charset = $table->getCharset();
+```
+
+**Get Collation**
+
+Get the table collation.
+
+```php
+$collation = $table->getCollation();
+```
+
+**Get Engine**
+
+Get the table engine.
+
+```php
+$engine = $table->getEngine();
+```
+
+
+## Columns
+
+**Default Value**
+
+Get the evaluated default value for a column.
+
+```php
+$defaultValue = $column->defaultValue();
+```
+
+**Get Comment**
+
+Get the column comment.
+
+```php
+$comment = $column->getComment();
+```
+
+**Get Default**
+
+Get the column default value.
+
+```php
+$default = $column->getDefault();
+```
+
+**Get Length**
+
+Get the column length.
+
+```php
+$length = $column->getLength();
+```
+
+**Get Name**
+
+Get the column name.
+
+```php
+$name = $column->getName();
+```
+
+**Get Precision**
+
+Get the column precision.
+
+```php
+$precision = $column->getPrecision();
+```
+
+**Get Table**
+
+Get the [*Table*](#tables).
+
+```php
+$table = $column->getTable();
+```
+
+**Get Type**
+
+Get the column type.
+
+```php
+$type = $column->getType();
+```
+
+**Is Auto Increment**
+
+Determine whether the column is an auto increment column.
+
+```php
+$isAutoIncrement = $column->isAutoIncrement();
+```
+
+**Is Nullable**
+
+Determine whether the column is nullable.
+
+```php
+$isNullable = $column->isNullable();
+```
+
+**Is Unsigned**
+
+Determine whether the column is unsigned.
+
+```php
+$isUnsigned = $column->isUnsigned();
+```
+
+**To Array**
+
+Get the column data as an array.
+
+```php
+$data = $column->toArray();
+```
+
+**Type**
+
+Get the type parser for the column.
+
+```php
+$typeParser = $column->type();
+```
+
+### Mysql Columns
+
+**Get Charset**
+
+Get the column character set.
+
+```php
+$charset = $column->getCharset();
+```
+
+**Get Collation**
+
+Get the column collation.
+
+```php
+$collation = $column->getCollation();
+```
+
+**Get Values**
+
+Get the column enum values.
+
+```php
+$values = $column->getValues();
+```
+
+
+## Indexes
+
+**Get Columns**
+
+Get the column names.
+
+```php
+$columns = $index->getColumns();
+```
+
+**Get Name**
+
+Get the index name.
+
+```php
+$name = $index->getName();
+```
+
+**Get Table**
+
+Get the [*Table*](#tables).
+
+```php
+$table = $index->getTable();
+```
+
+**Get Type**
+
+Get the index type.
+
+```php
+$type = $index->getType();
+```
+
+**Is Primary**
+
+Determine whether the index is primary.
+
+```php
+$isPrimary = $index->isPrimary();
+```
+
+**Is Unique**
+
+Determine whether the index is unique.
+
+```php
+$isUnique = $index->isUnique();
+```
+
+**To Array**
+
+Get the index data as an array.
+
+```php
+$data = $index->getData();
+```
+
+
+## Foreign Keys
+
+**Get Columns**
+
+Get the column names.
+
+```php
+$columns = $foreignKey->getColumns();
+```
+
+**Get Name**
+
+Get the foreign key name.
+
+```php
+$name = $foreignKey->getName();
+```
+
+**Get On Delete**
+
+Get the delete action.
+
+```php
+$onDelete = $foreignKey->getOnDelete();
+```
+
+**Get On Update**
+
+Get the update action.
+
+```php
+$onUpdate = $foreignKey->getOnUpdate();
+```
+
+**Get Referenced Columns**
+
+Get the referenced column names.
+
+```php
+$referencedColumn = $foreignKey->getReferencedColumns();
+```
+
+**Get Referenced Table**
+
+Get the referenced table name.
+
+```php
+$referencedTable = $foreignKey->getReferencesTable();
+```
+
+**Get Table**
+
+Get the [*Table*](#tables).
+
+```php
+$table = $foreignKey->getTable();
+```
+
+**To Array**
+
+Get the foreign key data as an array.
+
+```php
+$data = $foreignKey->toArray();
 ```

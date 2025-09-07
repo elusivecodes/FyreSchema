@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Fyre\Schema\Handlers\Postgres;
 
-use Fyre\Schema\TableSchema;
+use Fyre\Schema\Table;
 
 use function array_key_exists;
 use function is_numeric;
@@ -11,28 +11,25 @@ use function preg_match;
 use function preg_replace;
 
 /**
- * PostgresTableSchema
+ * PostgresTable
  */
-class PostgresTableSchema extends TableSchema
+class PostgresTable extends Table
 {
-    protected static array $types = [
-        'bigint' => 'integer',
-        'boolean' => 'boolean',
-        'bytea' => 'binary',
-        'date' => 'date',
-        'datetime' => 'datetime',
-        'double precision' => 'float',
-        'integer' => 'integer',
-        'json' => 'json',
-        'jsonb' => 'json',
-        'numeric' => 'decimal',
-        'real' => 'float',
-        'smallint' => 'integer',
-        'text' => 'text',
-        'time without time zone' => 'time',
-        'timestamp without time zone' => 'datetime-fractional',
-        'timestamp with time zone' => 'datetime-timezone',
-    ];
+    /**
+     * Build a Column.
+     *
+     * @param string $name The column name.
+     * @param array $data The column data.
+     * @return PostgresColumn The Column.
+     */
+    protected function buildColumn(string $name, array $data): PostgresColumn
+    {
+        return $this->container->build(PostgresColumn::class, [
+            'table' => $this,
+            'name' => $name,
+            ...$data,
+        ]);
+    }
 
     /**
      * Read the table columns data.
@@ -97,7 +94,7 @@ class PostgresTableSchema extends TableSchema
             ->where([
                 'Columns.table_catalog' => $this->schema->getDatabaseName(),
                 'Columns.table_schema' => $this->schema->getConnection()->getSchema(),
-                'Columns.table_name' => $this->tableName,
+                'Columns.table_name' => $this->name,
             ])
             ->orderBy([
                 'Columns.ordinal_position' => 'ASC',
@@ -200,7 +197,7 @@ class PostgresTableSchema extends TableSchema
                     'type' => 'INNER',
                     'conditions' => [
                         'Classes.oid = Constraints.conrelid',
-                        'Classes.relname' => $this->tableName,
+                        'Classes.relname' => $this->name,
                     ],
                 ],
                 [
@@ -249,13 +246,13 @@ class PostgresTableSchema extends TableSchema
                     'columns' => [],
                     'referencedTable' => $result['ref_table_name'],
                     'referencedColumns' => [],
-                    'update' => match ($result['on_update']) {
+                    'onUpdate' => match ($result['on_update']) {
                         'a' => 'NO ACTION',
                         'c' => 'CASCADE',
                         'r' => 'RESTRICT',
                         default => 'SET NULL',
                     },
-                    'delete' => match ($result['on_delete']) {
+                    'onDelete' => match ($result['on_delete']) {
                         'a' => 'NO ACTION',
                         'c' => 'CASCADE',
                         'r' => 'RESTRICT',
@@ -296,7 +293,7 @@ class PostgresTableSchema extends TableSchema
                     'type' => 'INNER',
                     'conditions' => [
                         'Classes.oid = Indexes.indrelid',
-                        'Classes.relname' => $this->tableName,
+                        'Classes.relname' => $this->name,
                     ],
                 ],
                 [

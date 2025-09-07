@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Fyre\Schema\Handlers\Sqlite;
 
 use Fyre\DB\ValueBinder;
-use Fyre\Schema\TableSchema;
+use Fyre\Schema\Table;
 
 use function array_column;
 use function count;
@@ -13,37 +13,25 @@ use function preg_match;
 use function strtolower;
 
 /**
- * SqliteTableSchema
+ * SqliteTable
  */
-class SqliteTableSchema extends TableSchema
+class SqliteTable extends Table
 {
-    protected static array $types = [
-        'bigint' => 'integer',
-        'binary' => 'binary',
-        'blob' => 'binary',
-        'boolean' => 'boolean',
-        'clob' => 'binary',
-        'date' => 'date',
-        'datetime' => 'datetime',
-        'datetimefractional' => 'datetime-fractional',
-        'decimal' => 'decimal',
-        'double' => 'float',
-        'float' => 'float',
-        'int' => 'integer',
-        'integer' => 'integer',
-        'json' => 'json',
-        'mediumint' => 'integer',
-        'numeric' => 'decimal',
-        'real' => 'float',
-        'smallint' => 'integer',
-        'text' => 'text',
-        'time' => 'time',
-        'timestamp' => 'datetime',
-        'timestampfractional' => 'datetime-fractional',
-        'timestamptimezone' => 'datetime-timezone',
-        'tinyint' => 'integer',
-        'varbinary' => 'binary',
-    ];
+    /**
+     * Build a Column.
+     *
+     * @param string $name The column name.
+     * @param array $data The column data.
+     * @return SqliteColumn The Column.
+     */
+    protected function buildColumn(string $name, array $data): SqliteColumn
+    {
+        return $this->container->build(SqliteColumn::class, [
+            'table' => $this,
+            'name' => $name,
+            ...$data,
+        ]);
+    }
 
     /**
      * Read the table columns data.
@@ -53,7 +41,7 @@ class SqliteTableSchema extends TableSchema
     protected function readColumns(): array
     {
         $binder = new ValueBinder();
-        $p0 = $binder->bind($this->tableName);
+        $p0 = $binder->bind($this->name);
 
         $connection = $this->schema->getConnection();
 
@@ -151,7 +139,7 @@ class SqliteTableSchema extends TableSchema
     protected function readForeignKeys(): array
     {
         $binder = new ValueBinder();
-        $p0 = $binder->bind($this->tableName);
+        $p0 = $binder->bind($this->name);
 
         $connection = $this->schema->getConnection();
 
@@ -182,8 +170,8 @@ class SqliteTableSchema extends TableSchema
                 'columns' => [],
                 'referencedTable' => $result['ref_table_name'],
                 'referencedColumns' => [],
-                'update' => $result['on_update'],
-                'delete' => $result['on_delete'],
+                'onUpdate' => $result['on_update'],
+                'onDelete' => $result['on_delete'],
             ];
 
             $tempForeignKeys[$id]['columns'][] = $result['column_name'];
@@ -193,7 +181,7 @@ class SqliteTableSchema extends TableSchema
         $foreignKeys = [];
 
         foreach ($tempForeignKeys as $tempForeignKey) {
-            $foreignKeyName = $this->tableName.'_'.implode('_', $tempForeignKey['columns']);
+            $foreignKeyName = $this->name.'_'.implode('_', $tempForeignKey['columns']);
 
             $foreignKeys[$foreignKeyName] = $tempForeignKey;
         }
@@ -209,7 +197,7 @@ class SqliteTableSchema extends TableSchema
     protected function readIndexes(): array
     {
         $binder = new ValueBinder();
-        $p0 = $binder->bind($this->tableName);
+        $p0 = $binder->bind($this->name);
 
         $connection = $this->schema->getConnection();
 
@@ -236,7 +224,7 @@ class SqliteTableSchema extends TableSchema
         }
 
         $binder = new ValueBinder();
-        $p0 = $binder->bind($this->tableName);
+        $p0 = $binder->bind($this->name);
 
         $results = $connection
             ->select([

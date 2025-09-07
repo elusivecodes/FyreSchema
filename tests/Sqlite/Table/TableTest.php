@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Sqlite\TableSchema;
+namespace Tests\Sqlite\Table;
 
 use PHPUnit\Framework\TestCase;
 use Tests\Sqlite\SqliteConnectionTrait;
 
-final class TableSchemaTest extends TestCase
+final class TableTest extends TestCase
 {
     use ColumnTestTrait;
     use DefaultValueTestTrait;
@@ -20,18 +20,8 @@ final class TableSchemaTest extends TestCase
         $this->assertSame(
             $this->schema,
             $this->schema
-                ->describe('test')
+                ->table('test')
                 ->getSchema()
-        );
-    }
-
-    public function testGetTableName(): void
-    {
-        $this->assertSame(
-            'test',
-            $this->schema
-                ->describe('test')
-                ->getTableName()
         );
     }
 }

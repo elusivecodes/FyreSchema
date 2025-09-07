@@ -3,11 +3,15 @@ declare(strict_types=1);
 
 namespace Fyre\Schema;
 
+use Closure;
 use Fyre\Cache\CacheManager;
 use Fyre\Cache\Cacher;
+use Fyre\Collection\Collection;
 use Fyre\Container\Container;
 use Fyre\DB\Connection;
 use Fyre\Schema\Exceptions\SchemaException;
+use Fyre\Utility\Traits\MacroTrait;
+use Generator;
 
 use function array_keys;
 use function str_replace;
@@ -17,9 +21,15 @@ use function str_replace;
  */
 abstract class Schema
 {
+    use MacroTrait;
+
     protected const CACHE_KEY = 'schema';
 
+    protected static string $tableClass = Table::class;
+
     protected string $database;
+
+    protected array $loadedTables = [];
 
     protected array $schemas = [];
 
@@ -39,7 +49,7 @@ abstract class Schema
     ) {}
 
     /**
-     * Clear data from the cache.
+     * Clear the table data (including cache).
      *
      * @return Schema The Schema.
      */
@@ -54,23 +64,6 @@ abstract class Schema
         }
 
         return $this;
-    }
-
-    /**
-     * Get the TableSchema for a table.
-     *
-     * @param string $name The table name.
-     * @return TableSchema The TableSchema.
-     *
-     * @throws SchemaException if the table is not valid.
-     */
-    public function describe(string $name): TableSchema
-    {
-        if (!$this->hasTable($name)) {
-            throw SchemaException::forInvalidTable($name);
-        }
-
-        return $this->schemas[$name] ??= $this->tableSchema($name);
     }
 
     /**
@@ -128,18 +121,47 @@ abstract class Schema
      */
     public function hasTable(string $name): bool
     {
-        return array_key_exists($name, $this->tables());
+        $this->loadTables();
+
+        return array_key_exists($name, $this->tables);
     }
 
     /**
-     * Get the data for a table.
+     * Load data via a callback using the cache.
+     *
+     * @param string $key The data key.
+     * @param Closure $callback The data callback.
+     * @return array The data.
+     */
+    public function load(string $key, Closure $callback): array
+    {
+        $cache = $this->getCache();
+
+        if (!$cache) {
+            return $callback();
+        }
+
+        return $cache->remember(
+            $this->getCachePrefix().'.'.$key,
+            $callback
+        );
+    }
+
+    /**
+     * Load a Table.
      *
      * @param string $name The table name.
-     * @return array|null The table data.
+     * @return Table The Table.
      */
-    public function table(string $name): array|null
+    public function table(string $name): Table
     {
-        return $this->tables()[$name] ?? null;
+        $this->loadTables();
+
+        if (!array_key_exists($name, $this->tables)) {
+            throw SchemaException::forInvalidTable($name);
+        }
+
+        return $this->loadedTables[$name] ??= $this->buildTable($name, $this->tables[$name]);
     }
 
     /**
@@ -149,34 +171,45 @@ abstract class Schema
      */
     public function tableNames(): array
     {
-        return array_keys($this->tables());
+        $this->loadTables();
+
+        return array_keys($this->tables);
     }
 
     /**
-     * Get the data for all schema tables.
+     * Get all schema tables.
      *
-     * @return array The schema tables data.
+     * @return Collection The schema tables.
      */
-    public function tables(): array
+    public function tables(): Collection
     {
-        return $this->tables ??= $this->loadTables();
+        $this->loadTables();
+
+        return new Collection(
+            function(): Generator {
+                foreach ($this->tables as $name => $data) {
+                    yield $name => $this->loadedTables[$name] ??= $this->buildTable($name, $data);
+                }
+            }
+        );
     }
+
+    /**
+     * Build a Table.
+     *
+     * @param string $name The table name.
+     * @param array $data The table data.
+     * @return Table The Table.
+     */
+    abstract protected function buildTable(string $name, array $data): Table;
 
     /**
      * Load the schema tables data.
-     *
-     * @return array The schema tables data.
      */
-    protected function loadTables(): array
+    protected function loadTables(): void
     {
-        $cache = $this->getCache();
-
-        if (!$cache) {
-            return $this->readTables();
-        }
-
-        return $cache->remember(
-            $this->getCachePrefix().'.tables',
+        $this->tables ??= $this->load(
+            'tables',
             [$this, 'readTables'](...)
         );
     }
@@ -187,12 +220,4 @@ abstract class Schema
      * @return array The schema tables data.
      */
     abstract protected function readTables(): array;
-
-    /**
-     * Create a TableSchema.
-     *
-     * @param string $name The table name.
-     * @return TableSchema The TableSchema.
-     */
-    abstract protected function tableSchema(string $name): TableSchema;
 }
