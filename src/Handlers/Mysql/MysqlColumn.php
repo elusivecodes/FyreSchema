@@ -44,6 +44,8 @@ class MysqlColumn extends Column
     /**
      * New MysqlColumn constructor.
      *
+     * @param MysqlTable $table The Table.
+     * @param TypeParser $typeParser The TypeParser.
      * @param string $name The column name.
      * @param string $type The column type.
      * @param int|null $length The column length.

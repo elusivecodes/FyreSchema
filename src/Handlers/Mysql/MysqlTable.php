@@ -25,7 +25,8 @@ class MysqlTable extends Table
     /**
      * New MysqlTable constructor.
      *
-     * @param Schema $schema The Schema.
+     * @param Container $container The Container.
+     * @param MysqlSchema $schema The Schema.
      * @param string $name The table name.
      * @param string|null $comment The table comment.
      * @param string|null $engine The table engine.
@@ -35,7 +36,7 @@ class MysqlTable extends Table
      */
     public function __construct(
         Container $container,
-        Schema $schema,
+        MysqlSchema $schema,
         string $name,
         string|null $comment = null,
         protected string|null $engine = null,

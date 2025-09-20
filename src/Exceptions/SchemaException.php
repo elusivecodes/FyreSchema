@@ -15,7 +15,7 @@ class SchemaException extends RunTimeException
         return new static('Invalid table column: '.$tableName.'.'.$columnName);
     }
 
-    public static function forInvalidforeignKey(string $tableName, string $foreignKeyName): static
+    public static function forInvalidForeignKey(string $tableName, string $foreignKeyName): static
     {
         return new static('Invalid table foreign key: '.$tableName.'.'.$foreignKeyName);
     }
