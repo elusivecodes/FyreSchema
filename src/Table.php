@@ -65,6 +65,9 @@ abstract class Table
         $this->columns = null;
         $this->indexes = null;
         $this->foreignKeys = null;
+        $this->loadedColumns = [];
+        $this->loadedIndexes = [];
+        $this->loadedForeignKeys = [];
 
         return $this;
     }

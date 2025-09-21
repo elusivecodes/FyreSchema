@@ -56,6 +56,7 @@ abstract class Schema
     public function clear(): static
     {
         $this->tables = null;
+        $this->loadedTables = [];
 
         $cache = $this->getCache();
 
