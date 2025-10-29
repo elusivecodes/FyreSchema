@@ -159,7 +159,7 @@ class MysqlTable extends Table
                 $precision = (int) $match[1];
             } else if (preg_match('/^(?:enum|set)\((.*)\)$/', $result['col_type'], $match)) {
                 $values = array_map(
-                    fn(string $value): string => substr($value, 1, -1),
+                    static fn(string $value): string => substr($value, 1, -1),
                     explode(',', $match[1])
                 );
             } else if (!in_array($result['type'], ['float', 'double', 'real'])) {
