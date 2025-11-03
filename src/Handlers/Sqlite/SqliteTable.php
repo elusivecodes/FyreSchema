@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace Fyre\Schema\Handlers\Sqlite;
 
+use Fyre\Container\Container;
 use Fyre\DB\ValueBinder;
+use Fyre\Schema\Schema;
 use Fyre\Schema\Table;
+use Override;
 
 use function array_column;
 use function count;
@@ -18,15 +21,49 @@ use function strtolower;
 class SqliteTable extends Table
 {
     /**
+     * New SqliteTable constructor.
+     *
+     * @param Container $container The Container.
+     * @param Schema $schema The Schema.
+     * @param string $name The table name.
+     * @param string|null $comment The table comment.
+     */
+    public function __construct(
+        Container $container,
+        Schema $schema,
+        string $name
+    ) {
+        parent::__construct($container, $schema, $name);
+    }
+
+    /**
      * Build a Column.
      *
      * @param string $name The column name.
      * @param array $data The column data.
      * @return SqliteColumn The Column.
      */
+    #[Override]
     protected function buildColumn(string $name, array $data): SqliteColumn
     {
         return $this->container->build(SqliteColumn::class, [
+            'table' => $this,
+            'name' => $name,
+            ...$data,
+        ]);
+    }
+
+    /**
+     * Build an Index.
+     *
+     * @param string $name The index key name.
+     * @param array $data The index key data.
+     * @return SqliteIndex The Index.
+     */
+    #[Override]
+    protected function buildIndex(string $name, array $data): SqliteIndex
+    {
+        return $this->container->build(SqliteIndex::class, [
             'table' => $this,
             'name' => $name,
             ...$data,
@@ -38,6 +75,7 @@ class SqliteTable extends Table
      *
      * @return array The table columns data.
      */
+    #[Override]
     protected function readColumns(): array
     {
         $binder = new ValueBinder();
@@ -136,6 +174,7 @@ class SqliteTable extends Table
      *
      * @return array The table foreign keys data.
      */
+    #[Override]
     protected function readForeignKeys(): array
     {
         $binder = new ValueBinder();
@@ -194,6 +233,7 @@ class SqliteTable extends Table
      *
      * @return array The table indexes data.
      */
+    #[Override]
     protected function readIndexes(): array
     {
         $binder = new ValueBinder();

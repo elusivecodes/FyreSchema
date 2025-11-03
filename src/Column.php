@@ -8,6 +8,7 @@ use Fyre\DB\Types\Type;
 use Fyre\Utility\Traits\MacroTrait;
 
 use function ctype_digit;
+use function get_object_vars;
 use function is_numeric;
 use function preg_match;
 use function strtolower;
@@ -32,6 +33,7 @@ abstract class Column
      * @param bool $unsigned Whether the column is unsigned.
      * @param string|null $default The column default value.
      * @param string|null $comment The column comment.
+     * @param bool $autoIncrement Whether the column is auto-incrementing.
      */
     public function __construct(
         protected Table $table,
@@ -46,6 +48,21 @@ abstract class Column
         protected string|null $comment = null,
         protected bool $autoIncrement = false,
     ) {}
+
+    /**
+     * Get the debug info of the object.
+     *
+     * @return array The debug info.
+     */
+    public function __debugInfo(): array
+    {
+        $data = get_object_vars($this);
+
+        unset($data['table']);
+        unset($data['typeParser']);
+
+        return $data;
+    }
 
     /**
      * Get the default value for a column.

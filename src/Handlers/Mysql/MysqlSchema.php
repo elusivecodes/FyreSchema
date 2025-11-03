@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Fyre\Schema\Handlers\Mysql;
 
 use Fyre\Schema\Schema;
+use Override;
 
 /**
  * MysqlSchema
@@ -17,6 +18,7 @@ class MysqlSchema extends Schema
      * @param array $data The table data.
      * @return MysqlTable The Table.
      */
+    #[Override]
     protected function buildTable(string $name, array $data): MysqlTable
     {
         return $this->container->build(MysqlTable::class, [
@@ -31,6 +33,7 @@ class MysqlSchema extends Schema
      *
      * @return array The schema tables data.
      */
+    #[Override]
     protected function readTables(): array
     {
         $results = $this->connection->select([

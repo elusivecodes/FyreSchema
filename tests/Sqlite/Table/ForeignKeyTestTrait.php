@@ -9,6 +9,30 @@ use Fyre\Schema\ForeignKey;
 
 trait ForeignKeyTestTrait
 {
+    public function testDebug(): void
+    {
+        $data = $this->schema
+            ->table('test')
+            ->foreignKey('test_values_test_id')
+            ->__debugInfo();
+
+        $this->assertSame(
+            [
+                'name' => 'test_values_test_id',
+                'columns' => [
+                    'test_id',
+                ],
+                'referencedTable' => 'test',
+                'referencedColumns' => [
+                    'id',
+                ],
+                'onUpdate' => 'CASCADE',
+                'onDelete' => 'CASCADE',
+            ],
+            $data
+        );
+    }
+
     public function testForeignKey(): void
     {
         $foreignKey = $this->schema

@@ -265,6 +265,32 @@ trait ColumnTestTrait
         );
     }
 
+    public function testDebug(): void
+    {
+        $data = $this->schema
+            ->table('test')
+            ->column('name')
+            ->__debugInfo();
+
+        $this->assertSame(
+            [
+                'name' => 'name',
+                'type' => 'varchar',
+                'length' => 255,
+                'precision' => null,
+                'values' => null,
+                'nullable' => true,
+                'unsigned' => false,
+                'default' => 'NULL',
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'comment' => '',
+                'autoIncrement' => false,
+            ],
+            $data
+        );
+    }
+
     public function testHasAutoIncrement(): void
     {
         $this->assertTrue(

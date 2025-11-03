@@ -15,6 +15,27 @@ final class TableTest extends TestCase
     use PostgresConnectionTrait;
     use TypeTestTrait;
 
+    public function testDebug(): void
+    {
+        $data = $this->schema
+            ->table('test')
+            ->__debugInfo();
+
+        $this->assertSame(
+            [
+                'columns' => null,
+                'foreignKeys' => null,
+                'indexes' => null,
+                'loadedColumns' => [],
+                'loadedForeignKeys' => [],
+                'loadedIndexes' => [],
+                'name' => 'test',
+                'comment' => '',
+            ],
+            $data
+        );
+    }
+
     public function testGetSchema(): void
     {
         $this->assertSame(

@@ -15,6 +15,30 @@ final class TableTest extends TestCase
     use MysqlConnectionTrait;
     use TypeTestTrait;
 
+    public function testDebug(): void
+    {
+        $data = $this->schema
+            ->table('test')
+            ->__debugInfo();
+
+        $this->assertSame(
+            [
+                'columns' => null,
+                'foreignKeys' => null,
+                'indexes' => null,
+                'loadedColumns' => [],
+                'loadedForeignKeys' => [],
+                'loadedIndexes' => [],
+                'name' => 'test',
+                'comment' => '',
+                'engine' => 'InnoDB',
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+            $data
+        );
+    }
+
     public function testGetSchema(): void
     {
         $this->assertSame(

@@ -11,6 +11,7 @@ use Generator;
 
 use function array_key_exists;
 use function array_keys;
+use function get_object_vars;
 
 /**
  * Table
@@ -45,6 +46,21 @@ abstract class Table
         protected string $name,
         protected string|null $comment = null,
     ) {}
+
+    /**
+     * Get the debug info of the object.
+     *
+     * @return array The debug info.
+     */
+    public function __debugInfo(): array
+    {
+        $data = get_object_vars($this);
+
+        unset($data['container']);
+        unset($data['schema']);
+
+        return $data;
+    }
 
     /**
      * Clear the table data (including cache).

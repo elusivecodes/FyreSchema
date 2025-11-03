@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Fyre\Schema\Handlers\Postgres;
 
+use Fyre\DB\TypeParser;
 use Fyre\Schema\Column;
 
 /**
@@ -28,4 +29,44 @@ class PostgresColumn extends Column
         'timestamp without time zone' => 'datetime-fractional',
         'timestamp with time zone' => 'datetime-timezone',
     ];
+
+    /**
+     * New PostgresColumn constructor.
+     *
+     * @param PostgresTable $table The Table.
+     * @param string $name The column name.
+     * @param string $type The column type.
+     * @param int|null $length The column length.
+     * @param int|null $precision The column precision.
+     * @param bool $nullable Whether the column is nullable.
+     * @param string|null $default The column default value.
+     * @param string|null $comment The column comment.
+     * @param bool $autoIncrement Whether the column is auto-incrementing.
+     */
+    public function __construct(
+        PostgresTable $table,
+        TypeParser $typeParser,
+        string $name,
+        string $type,
+        int|null $length = null,
+        int|null $precision = null,
+        bool $nullable = false,
+        string|null $default = null,
+        string|null $comment = '',
+        bool $autoIncrement = false,
+    ) {
+        parent::__construct(
+            $table,
+            $typeParser,
+            $name,
+            $type,
+            $length,
+            $precision,
+            $nullable,
+            false,
+            $default,
+            $comment,
+            $autoIncrement
+        );
+    }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Fyre\Schema\Handlers\Postgres;
 
 use Fyre\Schema\Schema;
+use Override;
 
 /**
  * PostgresSchema
@@ -17,6 +18,7 @@ class PostgresSchema extends Schema
      * @param array $data The table data.
      * @return PostgresTable The Table.
      */
+    #[Override]
     protected function buildTable(string $name, array $data): PostgresTable
     {
         return $this->container->build(PostgresTable::class, [
@@ -31,6 +33,7 @@ class PostgresSchema extends Schema
      *
      * @return array The schema tables data.
      */
+    #[Override]
     protected function readTables(): array
     {
         $results = $this->connection->select([

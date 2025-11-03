@@ -14,6 +14,7 @@ use Fyre\Utility\Traits\MacroTrait;
 use Generator;
 
 use function array_keys;
+use function get_object_vars;
 use function str_replace;
 
 /**
@@ -31,8 +32,6 @@ abstract class Schema
 
     protected array $loadedTables = [];
 
-    protected array $schemas = [];
-
     protected array|null $tables = null;
 
     /**
@@ -47,6 +46,22 @@ abstract class Schema
         protected CacheManager $cacheManager,
         protected Connection $connection
     ) {}
+
+    /**
+     * Get the debug info of the object.
+     *
+     * @return array The debug info.
+     */
+    public function __debugInfo(): array
+    {
+        $data = get_object_vars($this);
+
+        unset($data['container']);
+        unset($data['cacheManager']);
+        unset($data['connection']);
+
+        return $data;
+    }
 
     /**
      * Clear the table data (including cache).

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Fyre\Schema\Handlers\Postgres;
 
 use Fyre\Schema\Table;
+use Override;
 
 use function array_key_exists;
 use function is_numeric;
@@ -22,6 +23,7 @@ class PostgresTable extends Table
      * @param array $data The column data.
      * @return PostgresColumn The Column.
      */
+    #[Override]
     protected function buildColumn(string $name, array $data): PostgresColumn
     {
         return $this->container->build(PostgresColumn::class, [
@@ -36,6 +38,7 @@ class PostgresTable extends Table
      *
      * @return array The table columns data.
      */
+    #[Override]
     protected function readColumns(): array
     {
         $results = $this->schema->getConnection()
@@ -176,6 +179,7 @@ class PostgresTable extends Table
      *
      * @return array The table foreign keys data.
      */
+    #[Override]
     protected function readForeignKeys(): array
     {
         $results = $this->schema->getConnection()
@@ -273,6 +277,7 @@ class PostgresTable extends Table
      *
      * @return array The table indexes data.
      */
+    #[Override]
     protected function readIndexes(): array
     {
         $results = $this->schema->getConnection()

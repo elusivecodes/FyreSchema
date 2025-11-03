@@ -6,8 +6,8 @@ namespace Fyre\Schema\Handlers\Mysql;
 use Fyre\Container\Container;
 use Fyre\DB\TypeParser;
 use Fyre\DB\ValueBinder;
-use Fyre\Schema\Schema;
 use Fyre\Schema\Table;
+use Override;
 
 use function array_map;
 use function explode;
@@ -81,6 +81,7 @@ class MysqlTable extends Table
      *
      * @return array The table data.
      */
+    #[Override]
     public function toArray(): array
     {
         return [
@@ -99,6 +100,7 @@ class MysqlTable extends Table
      * @param array $data The column data.
      * @return MysqlColumn The Column.
      */
+    #[Override]
     protected function buildColumn(string $name, array $data): MysqlColumn
     {
         return $this->container->build(MysqlColumn::class, [
@@ -113,6 +115,7 @@ class MysqlTable extends Table
      *
      * @return array The table columns data.
      */
+    #[Override]
     protected function readColumns(): array
     {
         $results = $this->schema->getConnection()
@@ -196,6 +199,7 @@ class MysqlTable extends Table
      *
      * @return array The table foreign keys data.
      */
+    #[Override]
     protected function readForeignKeys(): array
     {
         $results = $this->schema->getConnection()
@@ -257,6 +261,7 @@ class MysqlTable extends Table
      *
      * @return array The table indexes data.
      */
+    #[Override]
     protected function readIndexes(): array
     {
         $binder = new ValueBinder();

@@ -5,6 +5,8 @@ namespace Fyre\Schema;
 
 use Fyre\Utility\Traits\MacroTrait;
 
+use function get_object_vars;
+
 /**
  * Index
  */
@@ -30,6 +32,20 @@ class Index
         protected bool $primary = false,
         protected string|null $type = null,
     ) {}
+
+    /**
+     * Get the debug info of the object.
+     *
+     * @return array The debug info.
+     */
+    public function __debugInfo(): array
+    {
+        $data = get_object_vars($this);
+
+        unset($data['table']);
+
+        return $data;
+    }
 
     /**
      * Get the index columns.

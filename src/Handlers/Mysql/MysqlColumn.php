@@ -6,6 +6,7 @@ namespace Fyre\Schema\Handlers\Mysql;
 use Fyre\DB\TypeParser;
 use Fyre\DB\Types\Type;
 use Fyre\Schema\Column;
+use Override;
 
 /**
  * MysqlColumn
@@ -54,6 +55,7 @@ class MysqlColumn extends Column
      * @param bool $unsigned Whether the column is unsigned.
      * @param string|null $default The column default value.
      * @param string|null $comment The column comment.
+     * @param bool $autoIncrement Whether the column is auto-incrementing.
      * @param array|null $values The column values.
      * @param string|null $charset The column character set.
      * @param string|null $collation The column collation.
@@ -124,6 +126,7 @@ class MysqlColumn extends Column
      *
      * @return array The column data.
      */
+    #[Override]
     public function toArray(): array
     {
         return [
@@ -147,6 +150,7 @@ class MysqlColumn extends Column
      *
      * @return Type The type parser for the column.
      */
+    #[Override]
     public function type(): Type
     {
         if ($this->type === 'tinyint' && $this->length == 1) {
