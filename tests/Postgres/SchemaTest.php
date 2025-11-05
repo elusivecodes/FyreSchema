@@ -12,6 +12,18 @@ final class SchemaTest extends TestCase
 {
     use PostgresConnectionTrait;
 
+    public function testDebug(): void
+    {
+        $data = $this->schema->__debugInfo();
+
+        $this->assertSame(
+            [
+                'tables' => null,
+            ],
+            $data
+        );
+    }
+
     public function testGetConnection(): void
     {
         $this->assertSame(

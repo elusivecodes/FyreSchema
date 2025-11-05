@@ -58,6 +58,9 @@ abstract class Table
 
         unset($data['container']);
         unset($data['schema']);
+        unset($data['loadedColumns']);
+        unset($data['loadedForeignKeys']);
+        unset($data['loadedIndexes']);
 
         return $data;
     }

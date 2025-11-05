@@ -76,6 +76,32 @@ trait ColumnTestTrait
         );
     }
 
+    public function testColumnDebug(): void
+    {
+        $data = $this->schema
+            ->table('test')
+            ->column('name')
+            ->__debugInfo();
+
+        $this->assertSame(
+            [
+                'name' => 'name',
+                'type' => 'varchar',
+                'length' => 255,
+                'precision' => null,
+                'nullable' => true,
+                'unsigned' => false,
+                'default' => 'NULL',
+                'comment' => '',
+                'autoIncrement' => false,
+                'values' => null,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+            $data
+        );
+    }
+
     public function testColumnInvalid(): void
     {
         $this->expectException(SchemaException::class);
@@ -262,32 +288,6 @@ trait ColumnTestTrait
             $columns->map(
                 fn(MysqlColumn $column): array => $column->toArray()
             )->toArray()
-        );
-    }
-
-    public function testDebug(): void
-    {
-        $data = $this->schema
-            ->table('test')
-            ->column('name')
-            ->__debugInfo();
-
-        $this->assertSame(
-            [
-                'name' => 'name',
-                'type' => 'varchar',
-                'length' => 255,
-                'precision' => null,
-                'values' => null,
-                'nullable' => true,
-                'unsigned' => false,
-                'default' => 'NULL',
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'comment' => '',
-                'autoIncrement' => false,
-            ],
-            $data
         );
     }
 

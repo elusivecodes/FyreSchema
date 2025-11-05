@@ -9,27 +9,6 @@ use Fyre\Schema\Index;
 
 trait IndexTestTrait
 {
-    public function testDebug(): void
-    {
-        $data = $this->schema
-            ->table('test')
-            ->index('name')
-            ->__debugInfo();
-
-        $this->assertSame(
-            [
-                'name' => 'name',
-                'columns' => [
-                    'name',
-                ],
-                'unique' => true,
-                'primary' => false,
-                'type' => null,
-            ],
-            $data
-        );
-    }
-
     public function testHasIndex(): void
     {
         $this->assertTrue(
@@ -78,6 +57,27 @@ trait IndexTestTrait
 
         $this->assertNull(
             $index->getType()
+        );
+    }
+
+    public function testIndexDebug(): void
+    {
+        $data = $this->schema
+            ->table('test')
+            ->index('name')
+            ->__debugInfo();
+
+        $this->assertSame(
+            [
+                'name' => 'name',
+                'columns' => [
+                    'name',
+                ],
+                'unique' => true,
+                'primary' => false,
+                'type' => null,
+            ],
+            $data
         );
     }
 

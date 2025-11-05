@@ -568,7 +568,7 @@ $referencedColumn = $foreignKey->getReferencedColumns();
 Get the referenced table name.
 
 ```php
-$referencedTable = $foreignKey->getReferencesTable();
+$referencedTable = $foreignKey->getReferencedTable();
 ```
 
 **Get Table**

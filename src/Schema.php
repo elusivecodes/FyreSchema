@@ -28,8 +28,6 @@ abstract class Schema
 
     protected static string $tableClass = Table::class;
 
-    protected string $database;
-
     protected array $loadedTables = [];
 
     protected array|null $tables = null;
@@ -59,6 +57,7 @@ abstract class Schema
         unset($data['container']);
         unset($data['cacheManager']);
         unset($data['connection']);
+        unset($data['loadedTables']);
 
         return $data;
     }

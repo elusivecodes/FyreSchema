@@ -59,6 +59,29 @@ trait ColumnTestTrait
         );
     }
 
+    public function testColumnDebug(): void
+    {
+        $data = $this->schema
+            ->table('test')
+            ->column('name')
+            ->__debugInfo();
+
+        $this->assertSame(
+            [
+                'name' => 'name',
+                'type' => 'character varying',
+                'length' => 255,
+                'precision' => null,
+                'nullable' => true,
+                'unsigned' => false,
+                'default' => 'NULL',
+                'comment' => '',
+                'autoIncrement' => false,
+            ],
+            $data
+        );
+    }
+
     public function testColumnInvalid(): void
     {
         $this->expectException(SchemaException::class);
@@ -200,29 +223,6 @@ trait ColumnTestTrait
             $columns->map(
                 fn(PostgresColumn $column): array => $column->toArray()
             )->toArray()
-        );
-    }
-
-    public function testDebug(): void
-    {
-        $data = $this->schema
-            ->table('test')
-            ->column('name')
-            ->__debugInfo();
-
-        $this->assertSame(
-            [
-                'name' => 'name',
-                'type' => 'character varying',
-                'length' => 255,
-                'precision' => null,
-                'nullable' => true,
-                'unsigned' => false,
-                'default' => 'NULL',
-                'comment' => '',
-                'autoIncrement' => false,
-            ],
-            $data
         );
     }
 
