@@ -285,16 +285,16 @@
         },
         {
             "name": "fyre/db",
-            "version": "v7.0.1",
+            "version": "v7.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elusivecodes/FyreDB.git",
-                "reference": "2b68663ec169f8fdf9264c997a761eab2911ea48"
+                "reference": "710ea2fcdef9059ec561f0d003b509bd769b7d10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/2b68663ec169f8fdf9264c997a761eab2911ea48",
-                "reference": "2b68663ec169f8fdf9264c997a761eab2911ea48",
+                "url": "https://api.github.com/repos/elusivecodes/FyreDB/zipball/710ea2fcdef9059ec561f0d003b509bd769b7d10",
+                "reference": "710ea2fcdef9059ec561f0d003b509bd769b7d10",
                 "shasum": ""
             },
             "require": {
@@ -330,9 +330,9 @@
             "description": "A database library.",
             "support": {
                 "issues": "https://github.com/elusivecodes/FyreDB/issues",
-                "source": "https://github.com/elusivecodes/FyreDB/tree/v7.0.1"
+                "source": "https://github.com/elusivecodes/FyreDB/tree/v7.0.2"
             },
-            "time": "2025-11-03T11:47:25+00:00"
+            "time": "2025-11-05T12:22:32+00:00"
         },
         {
             "name": "fyre/event",
