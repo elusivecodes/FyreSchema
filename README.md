@@ -9,9 +9,9 @@
 - [Methods](#methods)
 - [Schemas](#schemas)
 - [Tables](#tables)
-    - [Mysql Tables](#mysql-tables)
+    - [MySQL Tables](#mysql-tables)
 - [Columns](#columns)
-    - [Mysql Columns](#mysql-columns)
+    - [MySQL Columns](#mysql-columns)
 - [Indexes](#indexes)
 - [Foreign Keys](#foreign-keys)
 
@@ -302,7 +302,7 @@ Get the table data as an array.
 $data = $table->toArray();
 ```
 
-### Mysql Tables
+### MySQL Tables
 
 **Get Charset**
 
@@ -435,7 +435,7 @@ Get the type parser for the column.
 $typeParser = $column->type();
 ```
 
-### Mysql Columns
+### MySQL Columns
 
 **Get Charset**
 
@@ -517,7 +517,7 @@ $isUnique = $index->isUnique();
 Get the index data as an array.
 
 ```php
-$data = $index->getData();
+$data = $index->toArray();
 ```
 
 
